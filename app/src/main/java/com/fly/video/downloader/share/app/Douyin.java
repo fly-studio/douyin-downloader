@@ -1,8 +1,8 @@
-package com.example.administrator.myapplication.share.app;
+package com.fly.video.downloader.share.app;
 
 import android.util.Patterns;
 
-import com.example.administrator.myapplication.network.Http;
+import com.fly.video.downloader.network.Http;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

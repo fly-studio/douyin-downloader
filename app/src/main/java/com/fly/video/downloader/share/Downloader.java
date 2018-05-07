@@ -1,11 +1,10 @@
-package com.example.administrator.myapplication.share;
+package com.fly.video.downloader.share;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.example.administrator.myapplication.network.Http;
-import com.example.administrator.myapplication.share.app.Douyin;
+import com.fly.video.downloader.network.Http;
 
 import java.io.File;
 import java.io.IOException;

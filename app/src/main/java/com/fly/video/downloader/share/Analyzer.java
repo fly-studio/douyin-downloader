@@ -1,10 +1,10 @@
-package com.example.administrator.myapplication.share;
+package com.fly.video.downloader.share;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.example.administrator.myapplication.share.app.Douyin;
+import com.fly.video.downloader.share.app.Douyin;
 
 /**
  * Created by Administrator on 2018/5/4.
