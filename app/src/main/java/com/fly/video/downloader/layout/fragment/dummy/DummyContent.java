@@ -1,4 +1,4 @@
-package com.fly.video.downloader.layout.douyin.dummy;
+package com.fly.video.downloader.layout.fragment.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -2,11 +2,11 @@ package com.fly.video.downloader.core.listener;
 
 import android.content.Context;
 
-public class ActivelyListener {
+public class ActivityListener {
 
     protected Context context;
 
-    public ActivelyListener(Context context)
+    public ActivityListener(Context context)
     {
         this.context = context;
     }

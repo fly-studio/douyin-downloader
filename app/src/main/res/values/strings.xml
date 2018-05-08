@@ -4,7 +4,11 @@
     <string name="title_video">视频获取</string>
     <string name="title_user">用户全部视频</string>
     <string name="title_settings">设置</string>
+    <string name="editor_hint">请输入或粘贴内容</string>
+    <string name="search">查找</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_video_search">VideoSearchActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>

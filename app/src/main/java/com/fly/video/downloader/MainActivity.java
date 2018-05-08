@@ -1,38 +1,29 @@
 package com.fly.video.downloader;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.fly.video.downloader.R;
-import com.fly.video.downloader.layout.BottomNavigationViewPagerAdapter;
-import com.fly.video.downloader.layout.douyin.UserFragment;
-import com.fly.video.downloader.layout.douyin.VideoFragment;
+import com.fly.video.downloader.layout.fragment.UserFragment;
+import com.fly.video.downloader.layout.fragment.VideoFragment;
 import com.fly.video.downloader.share.Recv;
 
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class MainActivity extends AppCompatActivity {
-    @BindView(R.id.viewpager)
-    ViewPager viewPager;
-    @BindView(R.id.navigation)
+     @BindView(R.id.navigation)
     BottomNavigationView bottomNavigationView;
 
     Unbinder unbinder;
     VideoFragment videoFragment;
     UserFragment userFragment;
-    BottomNavigationViewPagerAdapter pagerAdapter;
-    List<Fragment> fragments;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -41,26 +32,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             int id = item.getItemId();
-            viewPager.setCurrentItem(id == R.id.navigation_user ? 1 : 0);
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.hide(userFragment).hide(videoFragment);
+            if (id == R.id.navigation_user) ft.show(userFragment); else ft.show(videoFragment);
+            ft.commit();
 
             return false;
-        }
-    };
-
-    private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            bottomNavigationView.getMenu().getItem(position).setChecked(true);
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
         }
     };
 
@@ -74,14 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
         videoFragment = VideoFragment.newInstance();
         userFragment = UserFragment.newInstance(1);
-        fragments = new ArrayList<>();
-        fragments.add(videoFragment);
-        fragments.add(userFragment);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.add(R.id.viewpager, videoFragment).add(R.id.viewpager, userFragment).hide(userFragment).show(videoFragment).commit();
 
-
-        pagerAdapter = new BottomNavigationViewPagerAdapter(getSupportFragmentManager(), fragments);
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.addOnPageChangeListener(mOnPageChangeListener);
 
         Recv recv = new Recv(this.getIntent());
         if (recv.isActionSend()) {

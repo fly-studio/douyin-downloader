@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.fly.video.downloader.layout.douyin.UserFragment"
+    tools:context="com.fly.video.downloader.layout.fragment.UserFragment"
     tools:listitem="@layout/fragment_item" />

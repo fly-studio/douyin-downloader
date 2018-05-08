@@ -1,8 +1,9 @@
-package com.fly.video.downloader.layout.douyin;
+package com.fly.video.downloader.layout.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,10 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fly.video.downloader.R;
-import com.fly.video.downloader.layout.douyin.dummy.DummyContent;
-import com.fly.video.downloader.layout.douyin.dummy.DummyContent.DummyItem;
-
-import java.util.List;
+import com.fly.video.downloader.layout.fragment.dummy.DummyContent;
+import com.fly.video.downloader.layout.listener.UserFragmentListener;
 
 /**
  * A fragment representing a list of Items.
@@ -24,9 +23,7 @@ import java.util.List;
  */
 public class UserFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 2;
 
     protected UserFragmentListener mFragmentListener;
@@ -47,6 +44,7 @@ public class UserFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,9 +76,9 @@ public class UserFragment extends Fragment {
 
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Activity context) {
         super.onAttach(context);
-        mFragmentListener = new UserFragmentListener(this, this.getContext());
+        mFragmentListener = new UserFragmentListener(this, context);
     }
 
     @Override

@@ -1,6 +1,5 @@
-package com.fly.video.downloader.layout.douyin;
+package com.fly.video.downloader.layout.fragment;
 
-import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.fly.video.downloader.R;
-import com.fly.video.downloader.layout.douyin.dummy.DummyContent.DummyItem;
+import com.fly.video.downloader.layout.fragment.dummy.DummyContent.DummyItem;
+import com.fly.video.downloader.layout.listener.UserFragmentListener;
 
 import java.util.List;
 

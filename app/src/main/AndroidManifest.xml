@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fly.video.downloader">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -10,37 +14,46 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.fly.video.downloader.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+
         <activity-alias
-            android:name="ShareActivity"
-            android:label="@string/share_recv_name"
+            android:name=".ShareActivity"
             android:icon="@mipmap/ic_launcher"
-            android:targetActivity=".MainActivity"
-            >
+            android:label="@string/share_recv_name"
+            android:targetActivity=".MainActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="android.intent.action.SEND" />
-                <!--<action android:name="android.intent.action.SEND_MULTIPLEND"/>-->
-                <data android:mimeType="text/plain"/>
 
-                <!--<data android:mimeType="image/jpeg"/>
+                <action android:name="android.intent.action.SEND" />
+                <!-- <action android:name="android.intent.action.SEND_MULTIPLEND"/> -->
+                <data android:mimeType="text/plain" />
+
+                <!--
+                <data android:mimeType="image/jpeg"/>
                 <data android:mimeType="image/png"/>
                 <data android:mimeType="application/zip"/>
                 <data android:mimeType="application/rar"/>
-                <data android:mimeType="audio/amr"/> -->
+                <data android:mimeType="audio/amr"/>
+                -->
             </intent-filter>
+
             <meta-data
                 android:name="test"
-                android:value="no"/>
+                android:value="no" />
         </activity-alias>
+
+        <activity
+            android:name=".activity.VideoSearchActivity"
+            android:label="@string/title_activity_video_search"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.VideoActivity"></activity>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 </manifest>
