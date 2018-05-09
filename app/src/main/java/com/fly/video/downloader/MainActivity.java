@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -16,6 +17,8 @@ import com.fly.video.downloader.layout.fragment.VideoFragment;
 import com.fly.video.downloader.layout.fragment.VideoSearchFragment;
 import com.fly.video.downloader.util.Recv;
 
+
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     protected VideoFragment videoFragment;
     protected UserFragment userFragment;
     protected VideoSearchFragment searchFragment = null;
+    private Date backPressAt = null;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -46,6 +50,13 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
+        @Override
+        public void onBackStackChanged() {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(getSupportFragmentManager().getBackStackEntryCount() > 0);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
 
         videoFragment = VideoFragment.newInstance();
         userFragment = UserFragment.newInstance(1);
+        getSupportFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.viewpager, videoFragment).add(R.id.viewpager, userFragment).hide(userFragment).show(videoFragment).commit();
-
 
         Recv recv = new Recv(this.getIntent());
         if (recv.isActionSend()) {
@@ -72,6 +83,42 @@ public class MainActivity extends AppCompatActivity {
         unbinder.unbind();
     }
 
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+
+        // 最后一次 并且大于2秒
+        if (fm.getBackStackEntryCount() == 0) {
+            if (backPressAt == null || new Date().getTime() - backPressAt.getTime() > 2000) {
+                Toast.makeText(this, R.string.one_more_exit, Toast.LENGTH_SHORT).show();
+                backPressAt = new Date();
+                return;
+            } else {
+                super.onBackPressed();
+            }
+        }
+
+        if (fm.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry back = fm.getBackStackEntryAt(fm.getBackStackEntryCount() -1);
+            switch (back.getName())
+            {
+                case "video":
+                    showFragment(videoFragment);
+                    break;
+            }
+
+            fm.popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return super.onSupportNavigateUp();
+    }
+
     public void showVideoSearchFragment()
     {
         if (null == searchFragment)
@@ -81,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(R.id.container, searchFragment).commit();
 
         showFragment(searchFragment);
-
+        getSupportFragmentManager().beginTransaction().addToBackStack("video").commit();
     }
 
     public MainActivity showFragment(Fragment... fragments)

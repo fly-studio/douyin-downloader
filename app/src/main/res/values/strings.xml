@@ -10,7 +10,7 @@
     <string name="paste_success">已粘贴</string>
     <string name="noURL">内容需要包含一个有效的网址</string>
     <string name="start_analyzing">开始分析...</string>
-
+    <string name="one_more_exit">再按一下退出程序</string>
 
     <!--网址-->
     <string name="url_douyin">www.iesdouyin.com</string>

@@ -58,10 +58,10 @@ public class VideoSearchFragment extends Fragment {
                 String str = clip.getText(0);
                 if (str == null || str.isEmpty())
                 {
-                    Toast.makeText(getActivity(), R.string.empty_clipboard, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.empty_clipboard, Toast.LENGTH_SHORT).show();
                 } else {
                     editor.setText(str);
-                    Toast.makeText(getActivity(), R.string.paste_success, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.paste_success, Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -79,7 +79,6 @@ public class VideoSearchFragment extends Fragment {
      *
      * @return A new instance of fragment VideoSearchFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static VideoSearchFragment newInstance() {
         VideoSearchFragment fragment = new VideoSearchFragment();
         return fragment;
@@ -115,7 +114,7 @@ public class VideoSearchFragment extends Fragment {
         String str = editor.getText().toString();
         if (str.isEmpty() || !Validator.containsUrl(str))
         {
-            Toast.makeText(getActivity(), R.string.noURL, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.noURL, Toast.LENGTH_SHORT).show();
         } else {
             getActivity().getSupportFragmentManager().beginTransaction().hide(this).commit();
             ((MainActivity)getActivity()).onVideoStringChange(str);
