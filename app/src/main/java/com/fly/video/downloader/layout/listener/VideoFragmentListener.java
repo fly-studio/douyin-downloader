@@ -1,7 +1,7 @@
 package com.fly.video.downloader.layout.listener;
 
 import android.content.Context;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import com.fly.video.downloader.core.listener.FragmentListener;
 

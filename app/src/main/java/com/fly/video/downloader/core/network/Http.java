@@ -1,4 +1,6 @@
-package com.fly.video.downloader.network;
+package com.fly.video.downloader.core.network;
+
+import com.fly.video.downloader.core.exception.HttpException;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -64,14 +66,14 @@ public class Http {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new HttpException(e);
         } finally {
             if (osw != null) {
                 try {
                     osw.close();
                 } catch (IOException e) {
                     osw = null;
-                    throw new RuntimeException(e);
+                    throw new HttpException(e);
                 } finally {
                     if (con != null) {
                         con.disconnect();
@@ -84,7 +86,7 @@ public class Http {
                     br.close();
                 } catch (IOException e) {
                     br = null;
-                    throw new RuntimeException(e);
+                    throw new HttpException(e);
                 } finally {
                     if (con != null) {
                         con.disconnect();
@@ -148,14 +150,14 @@ public class Http {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new HttpException(e);
         } finally {
             if (osw != null) {
                 try {
                     osw.close();
                 } catch (IOException e) {
                     osw = null;
-                    throw new RuntimeException(e);
+                    throw new HttpException(e);
                 }
             }
             if (br != null) {
@@ -163,7 +165,7 @@ public class Http {
                     br.close();
                 } catch (IOException e) {
                     br = null;
-                    throw new RuntimeException(e);
+                    throw new HttpException(e);
                 }
             }
         }
@@ -220,14 +222,14 @@ public class Http {
             }
             os.flush();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new HttpException(e);
         } finally {
             if (os != null) {
                 try {
                     os.close();
                 } catch (IOException e) {
                     os = null;
-                    throw new RuntimeException(e);
+                    throw new HttpException(e);
                 } finally {
                     if (con != null) {
                         con.disconnect();
@@ -240,7 +242,7 @@ public class Http {
                     br.close();
                 } catch (IOException e) {
                     br = null;
-                    throw new RuntimeException(e);
+                    throw new HttpException(e);
                 } finally {
                     if (con != null) {
                         con.disconnect();
@@ -287,14 +289,14 @@ public class Http {
                 resultBuffer.append(temp);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new HttpException(e);
         } finally {
             if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
                     br = null;
-                    throw new RuntimeException(e);
+                    throw new HttpException(e);
                 } finally {
                     if (con != null) {
                         con.disconnect();
@@ -346,14 +348,14 @@ public class Http {
                 resultBuffer.append(temp);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new HttpException(e);
         } finally {
             if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
                     br = null;
-                    throw new RuntimeException(e);
+                    throw new HttpException(e);
                 }
             }
         }

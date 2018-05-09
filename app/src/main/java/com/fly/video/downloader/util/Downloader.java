@@ -1,10 +1,10 @@
-package com.fly.video.downloader.share;
+package com.fly.video.downloader.util;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.fly.video.downloader.network.Http;
+import com.fly.video.downloader.core.network.Http;
 
 import java.io.File;
 import java.io.IOException;

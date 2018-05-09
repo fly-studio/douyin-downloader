@@ -49,11 +49,6 @@
                 android:value="no" />
         </activity-alias>
 
-        <activity
-            android:name=".activity.VideoSearchActivity"
-            android:label="@string/title_activity_video_search"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.VideoActivity"></activity>
     </application>
 
 </manifest>

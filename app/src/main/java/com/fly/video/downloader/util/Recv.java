@@ -1,4 +1,4 @@
-package com.fly.video.downloader.share;
+package com.fly.video.downloader.util;
 
 import android.content.Intent;
 import android.net.Uri;

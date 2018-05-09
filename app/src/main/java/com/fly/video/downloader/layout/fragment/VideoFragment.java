@@ -1,19 +1,21 @@
 package com.fly.video.downloader.layout.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.layout.listener.VideoFragmentListener;
-import com.fly.video.downloader.share.Analyzer;
+import com.fly.video.downloader.util.Analyzer;
+import com.fly.video.downloader.util.content.Video;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,10 +24,10 @@ import com.fly.video.downloader.share.Analyzer;
  * Use the {@link VideoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VideoFragment extends Fragment {
+public class VideoFragment extends Fragment implements Analyzer.AnalyzeListener {
 
     protected VideoFragmentListener mFragmentListener;
-    protected VideoSearchFragment searchFragment = null;
+    protected Video video = null;
 
     public VideoFragment() {
         // Required empty public constructor
@@ -51,6 +53,11 @@ public class VideoFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    public void onChange(String str)
+    {
+        Analyze(str);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.video, menu);
@@ -60,17 +67,7 @@ public class VideoFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (R.id.video_menu_search == item.getItemId()){
-            if (null == searchFragment)
-                searchFragment = VideoSearchFragment.newInstance();
-
-            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            ft.setCustomAnimations(android.R.animator.fade_in,
-                    android.R.animator.fade_out);
-            if (searchFragment.isAdded())
-                ft.show(searchFragment);
-            else
-                ft.add(R.id.video_fragment, searchFragment);
-            ft.commit();
+            ((MainActivity)getActivity()).showVideoSearchFragment();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -82,15 +79,9 @@ public class VideoFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_video, container, false);
     }
 
-    public void Analyze(String text)
-    {
-        Analyzer analyzer = new Analyzer(this.getActivity());
-        analyzer.execute(text);
-    }
-
 
     @Override
-    public void onAttach(Activity context) {
+    public void onAttach(Context context) {
         super.onAttach(context);
         mFragmentListener = new VideoFragmentListener(this, context);
         setMenuVisibility(true);
@@ -104,4 +95,25 @@ public class VideoFragment extends Fragment {
         mFragmentListener = null;
     }
 
+    public void Analyze(String text)
+    {
+        Toast.makeText(getActivity(), R.string.start_analyzing, Toast.LENGTH_SHORT).show();
+        Analyzer analyzer = new Analyzer(getActivity(), this);
+        analyzer.execute(text);
+    }
+
+    @Override
+    public void onAnalyzed(Video video) {
+        this.video = video;
+    }
+
+    @Override
+    public void onAnalyzeError(Exception e) {
+        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onAnalyzeCanceled() {
+
+    }
 }

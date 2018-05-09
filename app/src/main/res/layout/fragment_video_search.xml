@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="#f5f5f5"
         >
         <RelativeLayout
             android:layout_width="match_parent"
@@ -17,7 +18,7 @@
             >
 
             <com.beardedhen.androidbootstrap.BootstrapEditText
-                android:id="@+id/editText"
+                android:id="@+id/video_search_editor"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 app:bootstrapSize="md"
@@ -32,11 +33,11 @@
                 />
 
             <com.joanzapata.iconify.widget.IconTextView
-                android:id="@+id/btn_enter"
+                android:id="@+id/video_search_btn_enter"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_alignBottom="@+id/editText"
-                android:layout_alignEnd="@+id/editText"
+                android:layout_alignBottom="@+id/video_search_editor"
+                android:layout_alignEnd="@+id/video_search_editor"
                 android:layout_marginBottom="10dp"
                 android:layout_marginEnd="10dp"
                 android:text="{fa-search}"
