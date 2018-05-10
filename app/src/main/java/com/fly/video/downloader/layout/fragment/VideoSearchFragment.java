@@ -118,6 +118,7 @@ public class VideoSearchFragment extends Fragment {
         } else {
             getActivity().getSupportFragmentManager().beginTransaction().hide(this).commit();
             ((MainActivity)getActivity()).onVideoStringChange(str);
+            editor.setText("");
         }
 
     }

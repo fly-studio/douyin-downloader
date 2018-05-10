@@ -1,5 +1,6 @@
 package com.fly.video.downloader;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -32,7 +33,9 @@ public class MainActivity extends AppCompatActivity {
     protected VideoFragment videoFragment;
     protected UserFragment userFragment;
     protected VideoSearchFragment searchFragment = null;
+
     private Date backPressAt = null;
+    private boolean fromSend = false;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -65,16 +68,15 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+
+        getSupportFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
+
         videoFragment = VideoFragment.newInstance();
         userFragment = UserFragment.newInstance(1);
-        getSupportFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.viewpager, videoFragment).add(R.id.viewpager, userFragment).hide(userFragment).show(videoFragment).commit();
 
-        Recv recv = new Recv(this.getIntent());
-        if (recv.isActionSend()) {
-            videoFragment.Analyze(recv.getContent());
-        }
+        fromSend = this.getIntent() != null && Intent.ACTION_SEND.equals(this.getIntent().getAction());
     }
 
     @Override
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
 
         // 最后一次 并且大于2秒
-        if (fm.getBackStackEntryCount() == 0) {
+        if (fm.getBackStackEntryCount() == 0 && !fromSend) {
             if (backPressAt == null || new Date().getTime() - backPressAt.getTime() > 2000) {
                 Toast.makeText(this, R.string.one_more_exit, Toast.LENGTH_SHORT).show();
                 backPressAt = new Date();

@@ -3,6 +3,7 @@ package com.fly.video.downloader.layout.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +16,7 @@ import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.layout.listener.VideoFragmentListener;
 import com.fly.video.downloader.util.Analyzer;
+import com.fly.video.downloader.util.Recv;
 import com.fly.video.downloader.util.content.Video;
 
 /**
@@ -85,6 +87,12 @@ public class VideoFragment extends Fragment implements Analyzer.AnalyzeListener 
         super.onAttach(context);
         mFragmentListener = new VideoFragmentListener(this, context);
         setMenuVisibility(true);
+
+        Recv recv = new Recv(this.getActivity().getIntent());
+        if (recv.isActionSend() && isAdded()) {
+
+            Analyze(recv.getContent());
+        }
 
     }
 
