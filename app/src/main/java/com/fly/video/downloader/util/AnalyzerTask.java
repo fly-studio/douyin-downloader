@@ -11,15 +11,15 @@ import com.fly.video.downloader.util.content.Video;
 import com.fly.video.downloader.util.contract.VideoParser;
 import com.fly.video.downloader.util.exception.VideoException;
 
-public class Analyzer extends AsyncTask<String, Integer, AsyncTaskResult<Video>>  {
+public class AnalyzerTask extends AsyncTask<String, Integer, AsyncTaskResult<Video>>  {
 
     private Context context;
-    private AnalyzeListener fragment;
+    private AnalyzeListener listener;
 
-    public Analyzer(Context context, AnalyzeListener fragment)
+    public AnalyzerTask(Context context, AnalyzeListener listener)
     {
         this.context = context;
-        this.fragment = fragment;
+        this.listener = listener;
     }
 
     @Override
@@ -51,12 +51,12 @@ public class Analyzer extends AsyncTask<String, Integer, AsyncTaskResult<Video>>
     protected void onPostExecute(AsyncTaskResult<Video> result) {
         super.onPostExecute(result);
 
-        if (result.getError() != null)
-            fragment.onAnalyzeError(result.getError());
-        else if (isCancelled())
-            fragment.onAnalyzeCanceled();
+        if (isCancelled())
+            listener.onAnalyzeCanceled();
+        else if (result.getError() != null)
+            listener.onAnalyzeError(result.getError());
         else
-            fragment.onAnalyzed(result.getResult());
+            listener.onAnalyzed(result.getResult());
 
     }
 

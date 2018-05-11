@@ -9,15 +9,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.fly.video.downloader.layout.fragment.UserFragment;
 import com.fly.video.downloader.layout.fragment.VideoFragment;
 import com.fly.video.downloader.layout.fragment.VideoSearchFragment;
-import com.fly.video.downloader.util.Recv;
-
 
 import java.util.Date;
 
@@ -77,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         ft.add(R.id.viewpager, videoFragment).add(R.id.viewpager, userFragment).hide(userFragment).show(videoFragment).commit();
 
         fromSend = this.getIntent() != null && Intent.ACTION_SEND.equals(this.getIntent().getAction());
+
     }
 
     @Override

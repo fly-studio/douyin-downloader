@@ -13,7 +13,6 @@ public class DouyinVideo extends Video {
     protected long aweme_id = 0;
     protected Date create_time = null;
 
-
     public String getDynamicCoverUrl() {
         return dynamicCoverUrl;
     }
@@ -52,11 +51,6 @@ public class DouyinVideo extends Video {
 
     public void setCreate_time(Date create_time) {
         this.create_time = create_time;
-    }
-
-    @Override
-    public void setId(String id) {
-        super.setId(id);
     }
 
     public String[] getUrls() {

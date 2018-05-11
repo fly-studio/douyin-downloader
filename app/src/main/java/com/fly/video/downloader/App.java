@@ -1,16 +1,32 @@
 package com.fly.video.downloader;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
-public class MyApplication extends android.app.Application {
+public class App extends Application {
+
+    private static Application app;
+
     @Override
     public void onCreate() {
         super.onCreate();
         Iconify.with(new FontAwesomeModule());
         TypefaceProvider.registerDefaultIconSets();
+
+        app = this;
     }
+
+    public static Application getApp()
+    {
+        return app;
+    }
+
+    public static Context getAppContext() {
+        return getApp().getApplicationContext();
+    }
+
 }

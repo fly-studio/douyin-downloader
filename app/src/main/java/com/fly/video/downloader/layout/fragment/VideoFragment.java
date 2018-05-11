@@ -3,21 +3,23 @@ package com.fly.video.downloader.layout.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.layout.listener.VideoFragmentListener;
-import com.fly.video.downloader.util.Analyzer;
-import com.fly.video.downloader.util.Recv;
-import com.fly.video.downloader.util.content.Video;
+import com.fly.video.downloader.util.AnalyzerTask;
+import com.fly.video.downloader.util.content.Recv;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,13 +28,12 @@ import com.fly.video.downloader.util.content.Video;
  * Use the {@link VideoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VideoFragment extends Fragment implements Analyzer.AnalyzeListener {
+public class VideoFragment extends Fragment {
 
     protected VideoFragmentListener mFragmentListener;
-    protected Video video = null;
 
     public VideoFragment() {
-        // Required empty public constructor
+
     }
 
     /**
@@ -78,21 +79,30 @@ public class VideoFragment extends Fragment implements Analyzer.AnalyzeListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_video, container, false);
+        View view =  inflater.inflate(R.layout.fragment_video, container, false);
+
+
+        mFragmentListener.onCreateView(view);
+
+        Recv recv = new Recv(this.getActivity().getIntent());
+        if (recv.isActionSend() && isAdded())
+            Analyze(recv.getContent());
+
+        return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mFragmentListener.onDestroyView();
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         mFragmentListener = new VideoFragmentListener(this, context);
         setMenuVisibility(true);
-
-        Recv recv = new Recv(this.getActivity().getIntent());
-        if (recv.isActionSend() && isAdded()) {
-
-            Analyze(recv.getContent());
-        }
 
     }
 
@@ -106,22 +116,9 @@ public class VideoFragment extends Fragment implements Analyzer.AnalyzeListener 
     public void Analyze(String text)
     {
         Toast.makeText(getActivity(), R.string.start_analyzing, Toast.LENGTH_SHORT).show();
-        Analyzer analyzer = new Analyzer(getActivity(), this);
-        analyzer.execute(text);
+
+        AnalyzerTask analyzerTask = new AnalyzerTask(getActivity(), mFragmentListener);
+        analyzerTask.execute(text);
     }
 
-    @Override
-    public void onAnalyzed(Video video) {
-        this.video = video;
-    }
-
-    @Override
-    public void onAnalyzeError(Exception e) {
-        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onAnalyzeCanceled() {
-
-    }
 }

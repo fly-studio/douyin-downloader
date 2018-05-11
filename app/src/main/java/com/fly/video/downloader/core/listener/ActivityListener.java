@@ -11,5 +11,7 @@ public class ActivityListener {
         this.context = context;
     }
 
-
+    public Context getContext() {
+        return context;
+    }
 }
