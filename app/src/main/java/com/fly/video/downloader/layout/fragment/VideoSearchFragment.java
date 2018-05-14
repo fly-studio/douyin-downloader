@@ -9,9 +9,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.core.Validator;
@@ -29,7 +29,7 @@ import butterknife.Unbinder;
  */
 public class VideoSearchFragment extends Fragment {
     @BindView(R.id.video_search_editor)
-    protected BootstrapEditText editor;
+    protected EditText editor;
 
     private Unbinder unbinder;
 

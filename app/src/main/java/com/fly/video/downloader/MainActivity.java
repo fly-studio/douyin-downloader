@@ -1,6 +1,8 @@
 package com.fly.video.downloader;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -8,10 +10,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.fly.video.downloader.core.app.BaseActivity;
 import com.fly.video.downloader.layout.fragment.UserFragment;
 import com.fly.video.downloader.layout.fragment.VideoFragment;
 import com.fly.video.downloader.layout.fragment.VideoSearchFragment;
@@ -22,9 +25,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     @BindView(R.id.navigation)
     BottomNavigationView bottomNavigationView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private Unbinder unbinder;
     protected VideoFragment videoFragment;
@@ -42,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             int id = item.getItemId();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.hide(userFragment).hide(videoFragment);
-            if (id == R.id.navigation_user) ft.show(userFragment); else ft.show(videoFragment);
+
+            if (id == R.id.navigation_user) showFragment(userFragment); else showFragment(videoFragment);
             ft.commit();
 
             return true;
@@ -60,21 +65,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
+        // 设置Toolbar
+        setSupportActionBar(toolbar);
+        //底部状态栏
+ /*       bottomNavigationView.setBackground(new ColorDrawable(getResources().getColor(R.color.colorPrimaryDark)));
+        bottomNavigationView.setItemBackgroundResource(R.drawable.transparent);
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);*/
 
         getSupportFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
 
         videoFragment = VideoFragment.newInstance();
         userFragment = UserFragment.newInstance(1);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.viewpager, videoFragment).add(R.id.viewpager, userFragment).hide(userFragment).show(videoFragment).commit();
+        ft.add(R.id.full_pager, videoFragment).add(R.id.view_pager, userFragment).hide(userFragment).show(videoFragment).commit();
 
         fromSend = this.getIntent() != null && Intent.ACTION_SEND.equals(this.getIntent().getAction());
-
     }
 
     @Override
@@ -115,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
+        //finish();
         onBackPressed();
         return super.onSupportNavigateUp();
     }
@@ -125,27 +135,10 @@ public class MainActivity extends AppCompatActivity {
             searchFragment = VideoSearchFragment.newInstance();
 
         if (!searchFragment.isAdded())
-            getSupportFragmentManager().beginTransaction().add(R.id.container, searchFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.no_navigation_pager, searchFragment).commit();
 
         showFragment(searchFragment);
         getSupportFragmentManager().beginTransaction().addToBackStack("video").commit();
-    }
-
-    public MainActivity showFragment(Fragment... fragments)
-    {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.setCustomAnimations(android.R.animator.fade_in,
-                android.R.animator.fade_out);
-
-        for (Fragment f : fm.getFragments())
-            if (f.isAdded()) ft.hide(f);
-
-        for (Fragment f : fragments)
-            if (f.isAdded()) ft.show(f);
-
-        ft.commit();
-        return this;
     }
 
     public void onVideoStringChange(String str)
@@ -155,4 +148,12 @@ public class MainActivity extends AppCompatActivity {
         videoFragment.onChange(str);
     }
 
+
+    @Override
+    public MainActivity showFragment(Fragment... fragments) {
+         super.showFragment(fragments);
+         getApplication().setTheme(R.style.AppTheme_Light);
+        //toolbar.setPopupTheme(android.R.style.Theme.AppCompat.Light.DarkActionBar);
+         return this;
+    }
 }

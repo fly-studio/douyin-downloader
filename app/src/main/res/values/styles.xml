@@ -6,12 +6,39 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!-- 浮动ActionBar -->
+        <item name="android:windowActionBarOverlay">true</item>
+        <!--<item name="actionBarStyle">@style/blurActionbarStyle</item>-->
+
+        <item name="android:fitsSystemWindows">false</item>
+        <item name="android:clipToPadding">false</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--状态栏 导航栏透明-->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
         <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:fitsSystemWindows">false</item>
+        <item name="android:clipToPadding">false</item>
     </style>
+
+    <style name="AppTheme.Dark" parent="AppTheme.NoActionBar">
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark</item>
+    </style>
+
+    <style name="AppTheme.Light" parent="AppTheme.NoActionBar">
+        <item name="android:theme">@style/Theme.AppCompat.Light.DarkActionBar</item>
+    </style>
+
+    <style name="blurActionbarStyle" parent="Widget.AppCompat.Light.ActionBar.Solid">
+        <!--ActionBar的背景色设为透明-->
+        <item name="background">@android:color/transparent</item>
+    </style>
+
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

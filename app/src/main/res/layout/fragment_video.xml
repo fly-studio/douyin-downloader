@@ -22,16 +22,10 @@
             android:scaleType="centerCrop"
             />
 
-        <VideoView
+        <SurfaceView
             android:id="@+id/video_player"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:src="@mipmap/ic_launcher_round"
-            android:scaleType="fitCenter"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_gravity="center"
             />
 
@@ -82,7 +76,8 @@
             android:id="@+id/video_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@+id/video_content"
+            android:layout_alignEnd="@+id/video_content"
             android:src="@android:drawable/ic_menu_close_clear_cancel" />
 
     </RelativeLayout>
