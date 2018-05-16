@@ -11,12 +11,12 @@ import com.fly.video.downloader.layout.fragment.dummy.DummyContent;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class UserFragmentListener extends FragmentListener {
+public class HistoryFragmentListener extends FragmentListener {
 
     private Unbinder unbinder;
 
 
-    public UserFragmentListener(Fragment fragment, Context context)
+    public HistoryFragmentListener(Fragment fragment, Context context)
     {
         super(fragment, context);
     }

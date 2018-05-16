@@ -1,21 +1,17 @@
 package com.fly.video.downloader;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.fly.video.downloader.core.app.BaseActivity;
-import com.fly.video.downloader.layout.fragment.UserFragment;
+import com.fly.video.downloader.layout.fragment.HistoryFragment;
 import com.fly.video.downloader.layout.fragment.VideoFragment;
 import com.fly.video.downloader.layout.fragment.VideoSearchFragment;
 
@@ -33,7 +29,7 @@ public class MainActivity extends BaseActivity {
 
     private Unbinder unbinder;
     protected VideoFragment videoFragment;
-    protected UserFragment userFragment;
+    protected HistoryFragment historyFragment;
     protected VideoSearchFragment searchFragment = null;
 
     private Date backPressAt = null;
@@ -48,7 +44,7 @@ public class MainActivity extends BaseActivity {
             int id = item.getItemId();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-            if (id == R.id.navigation_user) showFragment(userFragment); else showFragment(videoFragment);
+            if (id == R.id.navigation_history) showFragment(historyFragment); else showFragment(videoFragment);
             ft.commit();
 
             return true;
@@ -73,15 +69,15 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         //底部状态栏
  /*       bottomNavigationView.setBackground(new ColorDrawable(getResources().getColor(R.color.colorPrimaryDark)));
-        bottomNavigationView.setItemBackgroundResource(R.drawable.transparent);
-        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);*/
+        bottomNavigationView.setItemBackgroundResource(R.drawable.transparent);*/
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         getSupportFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
 
         videoFragment = VideoFragment.newInstance();
-        userFragment = UserFragment.newInstance(1);
+        historyFragment = HistoryFragment.newInstance(1);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.full_pager, videoFragment).add(R.id.view_pager, userFragment).hide(userFragment).show(videoFragment).commit();
+        ft.add(R.id.full_pager, videoFragment).add(R.id.view_pager, historyFragment).hide(historyFragment).show(videoFragment).commit();
 
         fromSend = this.getIntent() != null && Intent.ACTION_SEND.equals(this.getIntent().getAction());
     }
@@ -148,12 +144,4 @@ public class MainActivity extends BaseActivity {
         videoFragment.onChange(str);
     }
 
-
-    @Override
-    public MainActivity showFragment(Fragment... fragments) {
-         super.showFragment(fragments);
-         getApplication().setTheme(R.style.AppTheme_Light);
-        //toolbar.setPopupTheme(android.R.style.Theme.AppCompat.Light.DarkActionBar);
-         return this;
-    }
 }

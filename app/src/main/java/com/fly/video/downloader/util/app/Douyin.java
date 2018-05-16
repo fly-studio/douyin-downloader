@@ -5,10 +5,9 @@ import android.util.Patterns;
 
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.core.contract.AbstractSingleton;
-import com.fly.video.downloader.core.exception.URLInvalidException;
-import com.fly.video.downloader.core.network.Http;
-import com.fly.video.downloader.util.contract.VideoParser;
 import com.fly.video.downloader.core.exception.HttpException;
+import com.fly.video.downloader.core.exception.URLInvalidException;
+import com.fly.video.downloader.util.contract.VideoParser;
 import com.fly.video.downloader.util.exception.VideoException;
 
 import org.json.JSONArray;
@@ -18,6 +17,9 @@ import org.json.JSONObject;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class Douyin extends VideoParser {
 
@@ -40,9 +42,9 @@ public class Douyin extends VideoParser {
         if (url == null)
             throw new URLInvalidException(this.getString(R.string.exception_invalid_url));
 
-        String html = Http.sendGet2(url, null, "utf-8");
+        String html = new OkHttpClient().newCall(new Request.Builder().url(url).build()).execute().body().string();
 
-        if (html.isEmpty())
+        if (html == null || html.isEmpty())
             throw new HttpException(this.getString(R.string.exception_http));
 
         if (!html.contains("?video_id="))

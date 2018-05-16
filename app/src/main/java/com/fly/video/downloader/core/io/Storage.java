@@ -5,7 +5,6 @@ import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.os.Environment;
 import android.os.storage.StorageManager;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -16,7 +15,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class Storage {

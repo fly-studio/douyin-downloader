@@ -2,7 +2,7 @@
     <string name="share_recv_name">下载无水印视频</string>
     <string name="app_name">抖音视频下载器</string>
     <string name="title_video">视频获取</string>
-    <string name="title_user">用户全部视频</string>
+    <string name="title_history">查询历史</string>
     <string name="title_settings">设置</string>
     <string name="editor_hint">请输入或粘贴内容</string>
     <string name="search">查找</string>
@@ -11,6 +11,7 @@
     <string name="noURL">内容需要包含一个有效的网址</string>
     <string name="start_analyzing">开始分析...</string>
     <string name="one_more_exit">再按一下退出程序</string>
+    <string name="download_complete">下载完成</string>
 
     <!--网址-->
     <string name="url_douyin">www.iesdouyin.com</string>

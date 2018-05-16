@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.layout.fragment.dummy.DummyContent.DummyItem;
-import com.fly.video.downloader.layout.listener.UserFragmentListener;
+import com.fly.video.downloader.layout.listener.HistoryFragmentListener;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ import java.util.List;
 public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
-    private final UserFragmentListener mListener;
+    private final HistoryFragmentListener mListener;
 
-    public MyItemRecyclerViewAdapter(List<DummyItem> items, UserFragmentListener listener) {
+    public MyItemRecyclerViewAdapter(List<DummyItem> items, HistoryFragmentListener listener) {
         mValues = items;
         mListener = listener;
     }

@@ -1,7 +1,5 @@
 package com.fly.video.downloader.util.content;
 
-import java.util.ArrayList;
-
 abstract public class Video {
     protected String id = null;
     protected String title = null;

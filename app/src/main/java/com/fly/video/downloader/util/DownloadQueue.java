@@ -1,23 +1,15 @@
 package com.fly.video.downloader.util;
 
 import com.fly.video.downloader.util.content.Downloader;
-import com.fly.video.downloader.util.exception.DownloadFileException;
+import com.fly.video.downloader.util.content.FileStorage;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DownloadQueue {
 
-    public enum STATUS {
-        UNKNOWN,
-        DOWNLOADING,
-        DONE,
-        CANCELED
-    }
-
-    protected HashMap<String, DownloaderStatus> downloaders = new HashMap<>();
+    protected HashMap<String, Downloader> downloaders = new HashMap<>();
     protected QueueListener listener = null;
 
     public DownloadQueue setQueueListener(QueueListener listener)
@@ -26,44 +18,34 @@ public class DownloadQueue {
         return this;
     }
 
-    public ArrayList<Downloader> getAllDownloaders()
+    public ArrayList<Downloader> getDownloaders()
     {
         ArrayList<Downloader> result = new ArrayList<>();
 
-        for (Map.Entry<String, DownloaderStatus> entry : downloaders.entrySet()
+        for (Map.Entry<String, Downloader> entry : downloaders.entrySet()
              ) {
-            result.add(entry.getValue().downloader);
+            result.add(entry.getValue());
         }
         return result;
     }
 
     public String getHash(Downloader downloader)
     {
-        for (Map.Entry<String, DownloaderStatus> entry : downloaders.entrySet())
+        for (Map.Entry<String, Downloader> entry : downloaders.entrySet())
         {
-            if (entry.getValue().downloader == downloader)
+            if (entry.getValue() == downloader)
                 return entry.getKey();
         }
         return null;
     }
 
-    public DownloaderStatus get(Downloader downloader)
-    {
-        for (Map.Entry<String, DownloaderStatus> entry : downloaders.entrySet())
-        {
-            if (entry.getValue().downloader == downloader)
-                return entry.getValue();
-        }
-        return null;
-    }
-
-    public DownloaderStatus get(String hash)
+    public Downloader get(String hash)
     {
         return downloaders.get(hash);
     }
 
 
-    public DownloadQueue cancel(String[] ...hashes)
+    public DownloadQueue cancel(String ...hashes)
     {
         for (int i = 0; i < hashes.length; i++) {
             if (downloaders.containsKey(hashes[i]))
@@ -74,7 +56,7 @@ public class DownloadQueue {
 
     public DownloadQueue cancelAll()
     {
-        for (Map.Entry<String, DownloaderStatus> entry : downloaders.entrySet()
+        for (Map.Entry<String, Downloader> entry : downloaders.entrySet()
                 ) {
             entry.getValue().cancel();
         }
@@ -88,17 +70,13 @@ public class DownloadQueue {
         return this;
     }
 
-    public boolean add(String hash, Downloader downloader)
+    public DownloadQueue add(String hash, Downloader downloader)
     {
-        // 没加入，或者已经取消或出错了
-        if (!downloaders.containsKey(hash) || (downloaders.containsKey(hash) && downloaders.get(hash).status == STATUS.CANCELED)) {
-            downloaders.put(hash, new DownloaderStatus(hash, downloader.setDownloadListener(mDownloaderListener)));
-            return true;
-        }
-        return false;
+        downloaders.put(hash, downloader);
+        return this;
     }
 
-    public DownloadQueue remove(String[] ...hashes)
+    public DownloadQueue remove(String ...hashes)
     {
         for (int i = 0; i < hashes.length; i++) {
             cancel(hashes[i]);
@@ -108,76 +86,73 @@ public class DownloadQueue {
         return this;
     }
 
-    public DownloadQueue download() throws Exception
+    public DownloadQueue remove(Downloader ...downloaders1)
     {
-        for (Map.Entry<String, DownloaderStatus> entry : downloaders.entrySet()
-             ) {
-            DownloaderStatus status = entry.getValue();
-            Downloader downloader = status.downloader;
-            downloader.setDownloadListener(mDownloaderListener);
-            File file = downloader.getFile();
-            if (file == null)
-                throw new DownloadFileException("Please saveToX before download, eg: new Download(..).saveToCache()");
+        for (int i = 0; i < downloaders1.length; i++)
+            remove(getHash(downloaders1[i]));
 
-            if (file.exists() && file.length() > 0)
+        return this;
+    }
+
+    public DownloadQueue start() throws Exception
+    {
+        for (Map.Entry<String, Downloader> entry : downloaders.entrySet()
+             ) {
+            Downloader downloader = entry.getValue();
+            downloader.setDownloadListener(mDownloaderListener);
+
+            FileStorage file = downloader.getFile();
+            if (file != null && file.exists())
                 mDownloaderListener.onDownloaded(downloader);
 
-            status.download();
-
+            downloader.start();
         }
         return this;
     }
 
-    Downloader.DownloaderListener mDownloaderListener = new Downloader.DownloaderListener() {
+    private Downloader.DownloaderListener mDownloaderListener = new Downloader.DownloaderListener() {
         @Override
         public void onDownloaded(Downloader downloader) {
-            DownloaderStatus status = get(downloader);
-            if (status != null) {
-                status.done();
-                if (listener != null) listener.onDownloaded(status.hash, downloader);
-            }
 
             if (listener != null)
             {
+                listener.onDownloaded(getHash(downloader), downloader);
+
                 boolean downloaded = true;
-                ArrayList<String> canceledHashes = new ArrayList<>();
+                ArrayList<String> accidentHashes = new ArrayList<>();
 
-                for (Map.Entry<String, DownloaderStatus> entry: downloaders.entrySet()
+                for (Map.Entry<String, Downloader> entry: downloaders.entrySet()
                         ) {
-                    status = entry.getValue();
+                    downloader = entry.getValue();
 
-                    if (status.status == STATUS.CANCELED) {
-                        canceledHashes.add(entry.getKey());
+                    if (downloader.isCanceled() || downloader.isError()) {
+                        accidentHashes.add(entry.getKey());
                         continue;
-                    } else if (status.status != STATUS.DONE) {
+                    } else if (!downloader.isDownloaded()) {
                         downloaded = false;
                         break;
                     }
                 }
 
-                if (downloaded) listener.onQueueDownloaded(DownloadQueue.this, canceledHashes);
+                if (downloaded) listener.onQueueDownloaded(DownloadQueue.this, accidentHashes);
             }
         }
 
         @Override
         public void onDownloadProgress(Downloader downloader, long loaded, long total) {
-            DownloaderStatus status = get(downloader);
-            if (status != null) {
-                status.downloading(loaded, total);
-                if (listener != null) listener.onDownloadProgress(status.hash, downloader, loaded, total);
-            }
 
             if (listener != null)
             {
+                listener.onDownloadProgress(getHash(downloader), downloader, loaded, total);
                 // 计算总比例
                 long _loaded = 0;
                 long _total = 0;
 
-                for (Map.Entry<String, DownloaderStatus> entry: downloaders.entrySet()
+                for (Map.Entry<String, Downloader> entry: downloaders.entrySet()
                         ) {
-                    status = entry.getValue();
-                    _loaded += status.loaded;
-                    _total += status.total;
+                    downloader = entry.getValue();
+                    _loaded += downloader.getLoaded();
+                    _total += downloader.getTotal();
                 }
 
                 listener.onQueueProgress(DownloadQueue.this, _loaded, _total);
@@ -186,83 +161,24 @@ public class DownloadQueue {
 
         @Override
         public void onDownloadCanceled(Downloader downloader) {
-            DownloaderStatus status = get(downloader);
-            if (status != null) {
-                status.cancel();
-                if (listener != null) listener.onDownloadCanceled(status.hash, downloader);
-            }
 
+            if (listener != null) listener.onDownloadCanceled(getHash(downloader), downloader);
         }
 
         @Override
         public void onDownloadError(Downloader downloader, Exception e) {
-            DownloaderStatus status = get(downloader);
-            if (status != null) {
-                status.cancel();
-                if (listener != null)
-                    listener.onDownloadError(status.hash, downloader, e);
-            }
 
+            if (listener != null) listener.onDownloadError(getHash(downloader), downloader, e);
         }
     };
 
     public interface QueueListener {
-        void onQueueDownloaded(DownloadQueue downloadQueue, ArrayList<String> canceledHashes);
+        void onQueueDownloaded(DownloadQueue downloadQueue, ArrayList<String> accidentHashes);
         void onQueueProgress(DownloadQueue downloadQueue, long loaded, long total);
         void onDownloaded(String hash, Downloader downloader);
         void onDownloadProgress(String hash, Downloader downloader, long loaded, long total);
         void onDownloadCanceled(String hash, Downloader downloader);
         void onDownloadError(String hash, Downloader downloader, Exception e);
-    }
-
-    private class DownloaderStatus {
-
-        public String hash;
-        public Downloader downloader;
-        public STATUS status = STATUS.UNKNOWN;
-        public long total = 0;
-        public long loaded = 0;
-
-        public DownloaderStatus(String hash, Downloader downloader)
-        {
-            this.hash = hash;
-            this.downloader = downloader;
-        }
-
-        public DownloaderStatus download() throws Exception
-        {
-            if (status == STATUS.UNKNOWN)
-            {
-                status = STATUS.DOWNLOADING;
-                downloader.download();
-            }
-            return this;
-        }
-
-        public DownloaderStatus cancel()
-        {
-            if (status == STATUS.DOWNLOADING)
-                downloader.cancel();
-
-            status = STATUS.CANCELED;
-            loaded = total = 0;
-            return this;
-        }
-
-        public DownloaderStatus done()
-        {
-            status = STATUS.DONE;
-            loaded = total;
-            return this;
-        }
-
-        public DownloaderStatus downloading(long loaded, long total)
-        {
-            status = STATUS.DOWNLOADING;
-            this.loaded = loaded;
-            this.total = total;
-            return this;
-        }
     }
 
 }

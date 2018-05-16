@@ -7,8 +7,10 @@ import com.fly.video.downloader.core.io.Storage;
 import com.fly.video.downloader.core.security.Encrypt;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 
-public class FileStorage {
+public final class FileStorage extends File {
 
     public enum TYPE {
         IMAGE,
@@ -16,71 +18,99 @@ public class FileStorage {
         VIDEO
     }
 
-    protected TYPE type;
-    protected String filename;
-
-    public FileStorage(@NonNull TYPE type, @NonNull String filename)
+    public FileStorage(@NonNull File file)
     {
-        this.type = type;
-        this.filename = filename;
+        super(file.getAbsolutePath());
     }
 
-    protected String getRelativePath()
+    public FileStorage(@NonNull String pathname) {
+        super(pathname);
+    }
+
+    public FileStorage(String parent, @NonNull String child) {
+        super(parent, child);
+    }
+
+    public FileStorage(File parent, @NonNull String child) {
+        super(parent, child);
+    }
+
+    public FileStorage(@NonNull URI uri) {
+        super(uri);
+    }
+
+    public boolean createNewFile() throws IOException
     {
-        String md5 = Encrypt.MD5(filename);
-        String path = null;
-        switch (type)
+        getParentFile().mkdirs();
+
+        return super.createNewFile();
+    }
+
+    public FileStorage createTempFile() throws IOException
+    {
+        getParentFile().mkdirs();
+        return new FileStorage(File.createTempFile(this.getName(), null, this.getParentFile()));
+    }
+
+    public static final class Builder
+    {
+        private TYPE type;
+        private String filename;
+        private File path;
+
+        public Builder(@NonNull TYPE type, @NonNull String filename)
         {
-            case IMAGE:
-                path = "images";
-                break;
-            case AVATAR:
-                path = "avatars";
-                break;
-            case VIDEO:
-                path = "video";
-                break;
+            this.type = type;
+            this.filename = filename;
         }
 
-        return path + "/" + md5.substring(0, 2) + "/" + md5.substring(2, 4) + "/";
-    }
-
-    protected File createFile(File file) throws Exception
-    {
-        if (!file.exists()) {
-            try {
-                file.getParentFile().mkdirs();
-                //创建文件
-                file.createNewFile();
-            } catch (Exception e) {
-                throw e;
+        protected String getRelativePath()
+        {
+            String md5 = Encrypt.MD5(filename);
+            String path = null;
+            switch (type)
+            {
+                case IMAGE:
+                    path = "images";
+                    break;
+                case AVATAR:
+                    path = "avatars";
+                    break;
+                case VIDEO:
+                    path = "video";
+                    break;
             }
+
+            return path + "/" + md5.substring(0, 2) + "/" + md5.substring(2, 4) + "/";
         }
-        return file;
-    }
 
-    public File getCacheDir() throws Exception
-    {
-        File path = Storage.getCacheDir(App.getAppContext(), getRelativePath());
-        path.mkdirs();
-        return File.createTempFile(filename, null, path);
-    }
-
-    public File getDCIMDir() throws Exception
-    {
-        File path;
-        switch (type)
+        public FileStorage build()
         {
-            case VIDEO:
-                path = Storage.getVideoDir();
-                break;
-            case AVATAR:
-            case IMAGE:
-            default:
-                path = Storage.getPictureDir();
-                break;
+            return new FileStorage(path, filename);
         }
-        path.mkdirs();
-        return createFile(new File(path, filename));
+
+        public Builder setToCacheDir()
+        {
+            path = Storage.getCacheDir(App.getAppContext(), getRelativePath());
+            return this;
+        }
+
+        public Builder setToDCIMDir()
+        {
+            switch (type)
+            {
+                case VIDEO:
+                    path = Storage.getVideoDir();
+                    break;
+                case AVATAR:
+                case IMAGE:
+                default:
+                    path = Storage.getPictureDir();
+                    break;
+            }
+
+            return this;
+        }
     }
+
 }

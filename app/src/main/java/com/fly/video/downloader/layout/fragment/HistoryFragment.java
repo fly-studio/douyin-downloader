@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.layout.fragment.dummy.DummyContent;
-import com.fly.video.downloader.layout.listener.UserFragmentListener;
+import com.fly.video.downloader.layout.listener.HistoryFragmentListener;
 
 /**
  * A fragment representing a list of Items.
@@ -20,22 +20,22 @@ import com.fly.video.downloader.layout.listener.UserFragmentListener;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class UserFragment extends Fragment {
+public class HistoryFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 2;
 
-    protected UserFragmentListener mFragmentListener;
+    protected HistoryFragmentListener mFragmentListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public UserFragment() {
+    public HistoryFragment() {
     }
 
-    public static UserFragment newInstance(int columnCount) {
-        UserFragment fragment = new UserFragment();
+    public static HistoryFragment newInstance(int columnCount) {
+        HistoryFragment fragment = new HistoryFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -75,7 +75,7 @@ public class UserFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mFragmentListener = new UserFragmentListener(this, context);
+        mFragmentListener = new HistoryFragmentListener(this, context);
     }
 
     @Override

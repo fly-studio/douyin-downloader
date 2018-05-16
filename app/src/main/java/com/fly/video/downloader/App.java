@@ -3,7 +3,6 @@ package com.fly.video.downloader;
 import android.app.Application;
 import android.content.Context;
 
-import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
@@ -15,7 +14,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Iconify.with(new FontAwesomeModule());
-        TypefaceProvider.registerDefaultIconSets();
 
         app = this;
     }

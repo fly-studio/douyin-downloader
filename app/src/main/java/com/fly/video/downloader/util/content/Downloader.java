@@ -1,6 +1,5 @@
 package com.fly.video.downloader.util.content;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.fly.video.downloader.core.io.Storage;
@@ -8,62 +7,123 @@ import com.fly.video.downloader.core.security.Encrypt;
 import com.fly.video.downloader.util.DownloaderTask;
 import com.fly.video.downloader.util.exception.DownloadFileException;
 
-import java.io.File;
-
 public class Downloader {
 
+    public enum STATUS {
+        PREPARATIVE,
+        DOWNLOADING,
+        DONE,
+        CANCELED,
+        ERROR
+    }
+
     protected String url = null;
-    protected FileStorage.TYPE type;
-    protected String filename = null;
-    protected boolean downloaded = false;
+    protected long total = 0;
+    protected long loaded = 0;
+    protected STATUS status = STATUS.PREPARATIVE;
+
     protected DownloaderTask task = null;
     protected DownloaderListener listener;
 
-    protected File file = null;
+    protected FileStorage file = null;
 
     public Downloader(@NonNull String url)
     {
-        this.init(url, FileStorage.TYPE.IMAGE, null);
+        this(url, null);
     }
 
-    public Downloader(@NonNull String url, @NonNull FileStorage.TYPE type)
+    public Downloader(@NonNull String url, FileStorage file)
     {
-        this.init( url, type, null);
+        this.url = url;
+        this.file = file;
+        task = new DownloaderTask(this);
     }
-
-    public Downloader(@NonNull String url, @NonNull FileStorage.TYPE type, String filename)
-    {
-        this.init(url, type, filename);
-    }
-
 
     public String getUrl() {
         return url;
     }
 
-    public String getFilename() {
-        return filename;
+    public long getTotal() {
+        return total;
+    }
+
+    public long getLoaded() {
+        return loaded;
+    }
+
+    public STATUS getStatus() {
+        return status;
+    }
+
+    public DownloaderTask getTask() {
+        return task;
+    }
+
+    public DownloaderListener getListener() {
+        return listener;
+    }
+
+    public boolean isReparative() {
+        return status == STATUS.PREPARATIVE ;
     }
 
     public boolean isDownloaded() {
-        return downloaded;
+        return status == STATUS.DONE ;
     }
 
-    public File getFile() {
+    public boolean isCanceled() {
+        return status == STATUS.CANCELED ;
+    }
+
+    public boolean isDownloading() {
+        return status == STATUS.DOWNLOADING ;
+    }
+
+    public boolean isError() {
+        return status == STATUS.ERROR ;
+    }
+
+    public FileStorage getFile() {
         return file;
+    }
+
+    public Downloader setFile(FileStorage file)
+    {
+        this.file = file;
+        return this;
+    }
+
+    public Downloader setFileAsCache(@NonNull FileStorage.TYPE type, String filename)
+    {
+        if (filename == null || filename.isEmpty())
+            filename = Storage.getNowFilename() + "," + Storage.getRandomFilename(5);
+
+        try {
+            file = new FileStorage.Builder(type, filename).setToCacheDir().build();
+        } catch (Exception e) {
+            this.onDownloadError(e);
+        }
+
+        return this;
+    }
+
+    public Downloader setFileAsDCIM(@NonNull FileStorage.TYPE type, String filename)
+    {
+        if (filename == null || filename.isEmpty())
+            filename = Storage.getNowFilename() + "," + Storage.getRandomFilename(5);
+
+        try {
+            file = new FileStorage.Builder(type, filename).setToDCIMDir().build();
+        } catch (Exception e) {
+            this.onDownloadError(e);
+        }
+        return this;
     }
 
     public String getHash() {
         return Encrypt.MD5(url);
     }
 
-    private void init(@NonNull String url, @NonNull FileStorage.TYPE type, String filename)
-    {
-        this.url = url;
-        this.type = type;
-        this.filename = filename == null || filename.isEmpty() ? Storage.getNowFilename() + "," + Storage.getRandomFilename(5) : filename;
-        task = new DownloaderTask(this);
-    }
 
     public Downloader setDownloadListener(DownloaderListener listener)
     {
@@ -73,60 +133,69 @@ public class Downloader {
 
     public void cancel()
     {
-        if (!downloaded && task != null)
+        if (status == STATUS.DOWNLOADING)
             task.cancel(true);
     }
 
-    public void download() throws Exception
+    public void start() throws Exception
     {
         if (file == null)
-            throw new DownloadFileException("Please saveToX before download, eg: new Download(..).saveToCache().download()");
+            throw new DownloadFileException("Please set the File before 'start'");
 
-        if (!downloaded)
+        if (status == STATUS.PREPARATIVE) {
+            status = STATUS.DOWNLOADING;
+            loaded = total = 0;
             task.execute();
+        }
     }
 
-    public Downloader saveToCache()
+    protected void done()
     {
-        try {
-            file = new FileStorage(type, filename).getCacheDir();
-        } catch (Exception e) {
-            this.onDownloadError(e);
-        }
+        status = STATUS.DONE;
 
-        return this;
+
+        loaded = total;
     }
 
-    public Downloader saveToDCIM()
+    protected void error(Exception e)
     {
-        try {
-            file = new FileStorage(type, filename).getDCIMDir();
-        } catch (Exception e) {
-            this.onDownloadError(e);
-        }
+        status = STATUS.ERROR;
+        loaded = total = 0;
+    }
 
-        return this;
+    public void downloading(long loaded, long total)
+    {
+        status = STATUS.DOWNLOADING;
+        this.loaded = loaded;
+        this.total = total;
     }
 
     public void onDownloaded() {
-        downloaded = true;
+
+        done();
 
         if (this.listener != null)
             this.listener.onDownloaded(this);
     }
 
     public void onDownloadCanceled() {
+        cancel();
+
         if (this.listener != null)
             this.listener.onDownloadCanceled(this);
     }
 
     public void onDownloadError(Exception e) {
+        error(e);
+
         if (this.listener != null)
             this.listener.onDownloadError(this, e);
     }
 
     public void onDownloadProgress(long loaded, long total)
     {
+        downloading(loaded, total);
+
         if (this.listener != null)
             this.listener.onDownloadProgress(this, loaded, total);
     }

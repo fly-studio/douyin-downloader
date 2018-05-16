@@ -1,0 +1,243 @@
+package com.fly.video.downloader.layout.listener;
+
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.SurfaceTexture;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.support.constraint.solver.widgets.Rectangle;
+import android.view.Surface;
+import android.view.TextureView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+
+import com.fly.video.downloader.core.listener.ActivityListener;
+
+import java.io.FileDescriptor;
+
+public class PlayerListener extends ActivityListener {
+
+    protected TextureView textureView;
+    private Surface surface;
+    private MediaPlayer player;
+
+    public PlayerListener(Context context, TextureView textureView) {
+        super(context);
+        this.textureView = textureView;
+
+        textureView.setClickable(true);
+        textureView.setSurfaceTextureListener(mSurfaceTextureListener);
+        textureView.setOnClickListener(mTextureViewOnClickListener);
+
+
+        player = new MediaPlayer();
+        player.setLooping(true);
+        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        player.setOnPreparedListener(mMediaPlayerOnPreparedListener);
+        player.setOnVideoSizeChangedListener(mMediaPlayerOnVideoSizeChangedListener);
+        player.setOnBufferingUpdateListener(mMediaPlayerOnBufferingUpdateListener);
+        player.setOnCompletionListener(mMediaPlayerOnCompletionListener);
+        player.setScreenOnWhilePlaying(true); // 一直亮屏
+
+    }
+
+    protected void playVideo(final Uri video_uri) {
+        //new Thread(new Runnable() {
+        //    public void run() {
+                try {
+                    player.reset();
+                    player.setDataSource(getContext(), video_uri);
+                    player.prepareAsync();
+                } catch (Exception e) { // I can split the exceptions to get which error i need.
+                    e.printStackTrace();
+                }
+        //    }
+        //}).start();
+    }
+
+    protected void playVideo(final String video_url) {
+        //new Thread(new Runnable() {
+        //    public void run() {
+                try {
+                    player.reset();
+                    player.setDataSource(getContext(), Uri.parse(video_url));
+                    player.prepareAsync();
+                } catch (Exception e) { // I can split the exceptions to get which error i need.
+                    e.printStackTrace();
+                }
+        //    }
+        //}).start();
+    }
+
+    protected void playVideo(final FileDescriptor fd) {
+        //new Thread(new Runnable() {
+        //    public void run() {
+                try {
+                    player.reset();
+                    player.setDataSource(fd);
+                    player.prepareAsync();
+                } catch (Exception e) { // I can split the exceptions to get which error i need.
+                    e.printStackTrace();
+                }
+        //    }
+        //}).start();
+    }
+
+
+    private TextureView.OnClickListener mTextureViewOnClickListener = new TextureView.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            if (player != null) {
+                if (player.isPlaying()) {
+                    player.pause();
+                } else {
+                    player.start();
+                }
+            }
+
+        }
+    };
+
+    private MediaPlayer.OnBufferingUpdateListener mMediaPlayerOnBufferingUpdateListener = new MediaPlayer.OnBufferingUpdateListener() {
+        @Override
+        public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
+
+        }
+    };
+
+    private MediaPlayer.OnVideoSizeChangedListener mMediaPlayerOnVideoSizeChangedListener = new MediaPlayer.OnVideoSizeChangedListener(){
+        @Override
+        public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
+            mediaPlayer.start();
+        }
+    };
+
+    private TextureView.SurfaceTextureListener mSurfaceTextureListener = new TextureView.SurfaceTextureListener(){
+        @Override
+        public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
+            if (surface == null) {
+                surface = new Surface(surfaceTexture);
+                player.setSurface(surface);
+            }
+            player.start();
+        }
+
+        @Override
+        public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {
+            System.out.println("onSurfaceTextureSizeChanged");
+        }
+
+        @Override
+        public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+            System.out.println("onSurfaceTextureDestroyed");
+            player.pause();
+            //player.reset();
+            //player.release();
+            surface = null;
+            return false;
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+        }
+    };
+
+    private MediaPlayer.OnPreparedListener mMediaPlayerOnPreparedListener = new MediaPlayer.OnPreparedListener() {
+        @Override
+        public void onPrepared(MediaPlayer mediaPlayer) {
+
+            // Adjust the size of the video
+            // so it fits on the screen
+            int videoWidth = mediaPlayer.getVideoWidth();
+            int videoHeight = mediaPlayer.getVideoHeight();
+            float videoProportion = (float) videoWidth / (float) videoHeight;
+            Point screenSize = new Point();
+            ((Activity)getContext()).getWindowManager().getDefaultDisplay().getRealSize(screenSize);
+            //float screenProportion = (float) screenSize.x / (float) screenSize.y;
+
+            Rectangle rect = new Rectangle();
+            ViewGroup.LayoutParams lp = textureView.getLayoutParams();
+
+            //竖屏
+            if (videoProportion < 1)
+            {
+                // 高度扩充到全屏
+                rect.height = screenSize.y;
+                rect.width = (int)(videoProportion * (float) screenSize.y);
+                rect.y = 0;
+                rect.x = screenSize.x - rect.width >> 1;
+
+            } else { // 横屏
+
+                // 宽度扩充到全屏
+                rect.width = screenSize.x;
+                rect.height = (int) ((float) screenSize.x / videoProportion);
+
+                rect.y =  screenSize.y - rect.height >> 1;
+                rect.x = 0;
+            }
+
+            updateTextureViewSize(videoWidth, videoHeight, rect);
+            
+
+            //if (!mediaPlayer.isPlaying())
+            mediaPlayer.start();
+        }
+    };
+
+    protected void updateTextureViewSize(int videoWidth, int videoHeight, Rectangle viewRect) {
+
+        /*float scaleX = 1.0f;
+        float scaleY = 1.0f;
+
+        if (videoWidth > viewRect.width && videoHeight > viewRect.height) {
+            scaleX = (float)videoWidth / (float)viewRect.height;
+            scaleY = (float)videoHeight / (float)viewRect.height;
+        } else if (videoWidth < viewRect.width && videoHeight < viewRect.height) {
+            scaleX = (float)viewRect.width / (float)videoWidth;
+            scaleY = (float)viewRect.height / (float)videoHeight;
+        } else if (viewRect.width > videoWidth) {
+            scaleY = ((float)viewRect.width / (float)videoWidth) / ((float)viewRect.height / (float)videoHeight);
+        } else if (viewRect.height > videoHeight) {
+            scaleX = ((float)viewRect.height / (float)videoHeight) / ((float)viewRect.width / (float)videoWidth);
+        }
+
+        // Calculate pivot points, in our case crop from center
+        int pivotPointX = viewRect.width / 2;
+        int pivotPointY = viewRect.height / 2;
+
+        Matrix matrix = new Matrix();
+        textureView.getTransform(matrix);
+        matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY);
+        textureView.setTransform(matrix);*/
+
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams)textureView.getLayoutParams();
+        lp.width = viewRect.width;
+        lp.height = viewRect.height;
+        lp.leftMargin = viewRect.x;
+        lp.rightMargin = viewRect.x;
+        lp.topMargin = viewRect.y;
+        lp.bottomMargin = viewRect.y;
+        textureView.setLayoutParams(lp);
+        //textureView.setX(viewRect.x);
+        //textureView.setY(viewRect.y);
+
+
+        System.out.println("a");
+    }
+
+    private MediaPlayer.OnCompletionListener mMediaPlayerOnCompletionListener = new MediaPlayer.OnCompletionListener(){
+        @Override
+        public void onCompletion(MediaPlayer mediaPlayer) {
+            //mediaPlayer.stop();
+        }
+    };
+
+}
