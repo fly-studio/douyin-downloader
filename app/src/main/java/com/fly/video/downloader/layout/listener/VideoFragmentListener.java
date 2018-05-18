@@ -64,6 +64,8 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
     @Override
     public void onDestroyView() {
         unbinder.unbind();
+        if (playerListener != null)
+            playerListener.destoryVideo();
     }
 
 

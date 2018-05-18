@@ -188,6 +188,7 @@ public class PlayerListener extends ActivityListener {
             
 
             //if (!mediaPlayer.isPlaying())
+            mediaPlayer.setLooping(true);
             mediaPlayer.start();
         }
     };
@@ -240,4 +241,25 @@ public class PlayerListener extends ActivityListener {
         }
     };
 
+    public void resetVideo()
+    {
+        if (player != null)
+            player.reset();
+    }
+
+    public void pauseVideo()
+    {
+        if (player != null)
+        {
+            if (player.isPlaying()) player.pause();
+        }
+    }
+
+    public void destoryVideo() {
+        if (player != null)
+        {
+            if (player.isPlaying()) player.stop();
+            player.release();
+        }
+    }
 }
