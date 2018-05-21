@@ -1,5 +1,6 @@
 package com.fly.video.downloader.layout.listener;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,9 +9,12 @@ import android.support.v4.app.Fragment;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.core.io.Storage;
 import com.fly.video.downloader.core.listener.FragmentListener;
@@ -19,6 +23,7 @@ import com.fly.video.downloader.util.DownloadQueue;
 import com.fly.video.downloader.util.content.Downloader;
 import com.fly.video.downloader.util.content.FileStorage;
 import com.fly.video.downloader.util.content.Video;
+import com.joanzapata.iconify.widget.IconTextView;
 
 import java.util.ArrayList;
 
@@ -43,6 +48,8 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
     TextView content;
     @BindView(R.id.video_player)
     TextureView textureView;
+    @BindView(R.id.video_downloaded)
+    LinearLayout textDownloaded;
 
     PlayerListener playerListener;
 
@@ -57,6 +64,7 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
     public void onCreateView(View view)
     {
         unbinder = ButterKnife.bind(this, view);
+        textDownloaded.setVisibility(View.INVISIBLE);
 
         playerListener = new PlayerListener(context, textureView);
     }
@@ -68,6 +76,17 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
             playerListener.destoryVideo();
     }
 
+    public void pause()
+    {
+        if (playerListener != null)
+            playerListener.pauseVideo();
+    }
+
+    public void resume()
+    {
+        if (playerListener != null)
+            playerListener.resumeVideo();
+    }
 
     @Override
     public void onAnalyzed(Video video)
@@ -101,10 +120,17 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
     @Override
     public void onQueueDownloaded(DownloadQueue downloadQueue, ArrayList<String> canceledHashes) {
         Toast.makeText(this.context, R.string.download_complete, Toast.LENGTH_SHORT).show();
+        textDownloaded.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onQueueProgress(DownloadQueue downloadQueue, long loaded, long total) {
+        if (total <= 0)
+            ((MainActivity) context).setMainProgress(0);
+        else
+            ((MainActivity) context).setMainProgress((int)(loaded * 100 / total));
+
+        textDownloaded.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -157,7 +183,7 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
     @OnClick(R.id.video_close)
     public void onClose()
     {
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
+        com.fly.video.downloader.core.app.Process.background((Activity) context);
+
     }
 }

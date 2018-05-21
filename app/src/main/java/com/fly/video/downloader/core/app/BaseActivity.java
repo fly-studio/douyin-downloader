@@ -107,15 +107,16 @@ public class BaseActivity extends AppCompatActivity {
     {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.setCustomAnimations(android.R.animator.fade_in,
-                android.R.animator.fade_out);
+        //ft.setCustomAnimations(android.R.animator.fade_in,
+        //       android.R.animator.fade_out);
 
         for (Fragment f : fm.getFragments())
-            if (f.isAdded()) ft.hide(f);
+            if (f.isAdded())
+                ft.hide(f);
 
         for (Fragment f : fragments)
-            if (f.isAdded()) ft.show(f);
-
+            if (f.isAdded())
+                ft.show(f);
         ft.commit();
         return this;
     }

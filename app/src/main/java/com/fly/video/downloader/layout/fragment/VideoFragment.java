@@ -84,8 +84,6 @@ public class VideoFragment extends Fragment {
         if (recv.isActionSend() && isAdded())
             Analyze(recv.getContent());
 
-
-
         return view;
     }
 
@@ -100,6 +98,7 @@ public class VideoFragment extends Fragment {
         super.onAttach(context);
 
         mFragmentListener = new VideoFragmentListener(this, context);
+
         setMenuVisibility(true);
 
     }
@@ -109,6 +108,21 @@ public class VideoFragment extends Fragment {
         super.onDetach();
         setMenuVisibility(false);
         mFragmentListener = null;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        mFragmentListener.pause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mFragmentListener.resume();
+
     }
 
     public void Analyze(String text)

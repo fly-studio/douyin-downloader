@@ -1,6 +1,7 @@
 package com.fly.video.downloader.layout.listener;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -25,6 +26,7 @@ public class PlayerListener extends ActivityListener {
     protected TextureView textureView;
     private Surface surface;
     private MediaPlayer player;
+    private boolean loaded = false;
 
     public PlayerListener(Context context, TextureView textureView) {
         super(context);
@@ -51,6 +53,7 @@ public class PlayerListener extends ActivityListener {
         //    public void run() {
                 try {
                     player.reset();
+                    loaded= false;
                     player.setDataSource(getContext(), video_uri);
                     player.prepareAsync();
                 } catch (Exception e) { // I can split the exceptions to get which error i need.
@@ -65,6 +68,7 @@ public class PlayerListener extends ActivityListener {
         //    public void run() {
                 try {
                     player.reset();
+                    loaded= false;
                     player.setDataSource(getContext(), Uri.parse(video_url));
                     player.prepareAsync();
                 } catch (Exception e) { // I can split the exceptions to get which error i need.
@@ -79,6 +83,7 @@ public class PlayerListener extends ActivityListener {
         //    public void run() {
                 try {
                     player.reset();
+                    loaded= false;
                     player.setDataSource(fd);
                     player.prepareAsync();
                 } catch (Exception e) { // I can split the exceptions to get which error i need.
@@ -155,46 +160,40 @@ public class PlayerListener extends ActivityListener {
 
             // Adjust the size of the video
             // so it fits on the screen
-            int videoWidth = mediaPlayer.getVideoWidth();
-            int videoHeight = mediaPlayer.getVideoHeight();
-            float videoProportion = (float) videoWidth / (float) videoHeight;
-            Point screenSize = new Point();
-            ((Activity)getContext()).getWindowManager().getDefaultDisplay().getRealSize(screenSize);
-            //float screenProportion = (float) screenSize.x / (float) screenSize.y;
 
-            Rectangle rect = new Rectangle();
-            ViewGroup.LayoutParams lp = textureView.getLayoutParams();
-
-            //竖屏
-            if (videoProportion < 1)
-            {
-                // 高度扩充到全屏
-                rect.height = screenSize.y;
-                rect.width = (int)(videoProportion * (float) screenSize.y);
-                rect.y = 0;
-                rect.x = screenSize.x - rect.width >> 1;
-
-            } else { // 横屏
-
-                // 宽度扩充到全屏
-                rect.width = screenSize.x;
-                rect.height = (int) ((float) screenSize.x / videoProportion);
-
-                rect.y =  screenSize.y - rect.height >> 1;
-                rect.x = 0;
-            }
-
-            updateTextureViewSize(videoWidth, videoHeight, rect);
-            
-
-            //if (!mediaPlayer.isPlaying())
+            updateTextureViewSize(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
+            loaded = true;
             mediaPlayer.setLooping(true);
             mediaPlayer.start();
         }
     };
 
-    protected void updateTextureViewSize(int videoWidth, int videoHeight, Rectangle viewRect) {
+    protected void updateTextureViewSize(int videoWidth, int videoHeight) {
 
+        Rectangle viewRect = new Rectangle();
+        float videoProportion = (float) videoWidth / (float) videoHeight;
+        Point screenSize = new Point();
+        ((Activity)getContext()).getWindowManager().getDefaultDisplay().getRealSize(screenSize);
+        //float screenProportion = (float) screenSize.x / (float) screenSize.y;
+
+        //竖屏
+        if (videoProportion < 1)
+        {
+            // 高度扩充到全屏
+            viewRect.height = screenSize.y;
+            viewRect.width = (int)(videoProportion * (float) screenSize.y);
+            viewRect.y = 0;
+            viewRect.x = screenSize.x - viewRect.width >> 1;
+
+        } else { // 横屏
+
+            // 宽度扩充到全屏
+            viewRect.width = screenSize.x;
+            viewRect.height = (int) ((float) screenSize.x / videoProportion);
+
+            viewRect.y =  screenSize.y - viewRect.height >> 1;
+            viewRect.x = 0;
+        }
         /*float scaleX = 1.0f;
         float scaleY = 1.0f;
 
@@ -230,8 +229,6 @@ public class PlayerListener extends ActivityListener {
         //textureView.setX(viewRect.x);
         //textureView.setY(viewRect.y);
 
-
-        System.out.println("a");
     }
 
     private MediaPlayer.OnCompletionListener mMediaPlayerOnCompletionListener = new MediaPlayer.OnCompletionListener(){
@@ -245,20 +242,30 @@ public class PlayerListener extends ActivityListener {
     {
         if (player != null)
             player.reset();
+        loaded = false;
     }
 
     public void pauseVideo()
     {
         if (player != null)
         {
-            if (player.isPlaying()) player.pause();
+            if (loaded && player.isPlaying()) player.pause();
+        }
+    }
+
+    public void resumeVideo()
+    {
+        if (player != null)
+        {
+            if (loaded) player.start();
         }
     }
 
     public void destoryVideo() {
         if (player != null)
         {
-            if (player.isPlaying()) player.stop();
+            if (loaded && player.isPlaying()) player.stop();
+            loaded = false;
             player.release();
         }
     }

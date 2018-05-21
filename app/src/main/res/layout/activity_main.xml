@@ -44,7 +44,13 @@
 
             >
 
-            <View android:background="#fff" android:layout_width="match_parent" android:layout_height="1px"/>
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                />
+            <!--<View android:background="#fff" android:layout_width="match_parent" android:layout_height="1px"/>-->
             <android.support.design.widget.BottomNavigationView
                 android:id="@+id/navigation"
                 android:layout_width="match_parent"

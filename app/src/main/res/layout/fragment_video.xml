@@ -26,8 +26,9 @@
             android:id="@+id/video_player"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center" />
 
         <ImageView
             android:id="@+id/video_avatar"
@@ -43,14 +44,14 @@
 
         <TextView
             android:id="@+id/video_nickname"
-            android:layout_width="wrap_content"
+            android:layout_width="221dp"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/video_avatar"
             android:layout_alignBottom="@+id/video_avatar"
-            android:layout_marginStart="80dp"
+            android:layout_alignTop="@+id/video_avatar"
             android:layout_marginEnd="20dp"
-            android:textColor="#fff"
-            android:text="Nickname" />
+            android:layout_marginStart="80dp"
+            android:text="Nickname"
+            android:textColor="#fff" />
 
         <TextView
             android:id="@+id/video_content"
@@ -64,21 +65,43 @@
             android:textColor="#fff"
             android:text="Content" />
 
-        <ImageButton
-            android:id="@+id/video_btn_download"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/video_avatar"
-            android:layout_alignEnd="@+id/video_content"
-            android:src="@android:drawable/stat_sys_download" />
+            android:layout_centerInParent="true"
+            android:id="@+id/video_downloaded"
+            android:orientation="vertical">
+            <com.joanzapata.iconify.widget.IconTextView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:shadowColor="#22000000"
+                android:shadowDx="3"
+                android:shadowDy="3"
+                android:shadowRadius="1"
+                android:text="{fa-download}"
+                android:textColor="#CCC"
+                android:textSize="60dp" />
+            <TextView
+                android:id="@+id/editText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="下载完成" />
+        </LinearLayout>
 
-        <ImageButton
+        <com.joanzapata.iconify.widget.IconTextView
             android:id="@+id/video_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/video_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignEnd="@+id/video_content"
-            android:src="@android:drawable/ic_menu_close_clear_cancel" />
+            android:layout_alignTop="@+id/video_avatar"
+            android:shadowColor="#22000000"
+            android:shadowDx="3"
+            android:shadowDy="3"
+            android:shadowRadius="1"
+            android:text="{fa-times}"
+            android:textColor="@color/md_white_1000"
+            android:textSize="40sp" />
+
 
     </RelativeLayout>
 

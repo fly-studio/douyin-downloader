@@ -1,5 +1,6 @@
 package com.fly.video.downloader;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,12 +9,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.fly.video.downloader.core.app.BaseActivity;
 import com.fly.video.downloader.layout.fragment.HistoryFragment;
 import com.fly.video.downloader.layout.fragment.VideoFragment;
 import com.fly.video.downloader.layout.fragment.VideoSearchFragment;
+import com.fly.video.downloader.util.content.Recv;
 
 import java.util.Date;
 
@@ -26,6 +29,9 @@ public class MainActivity extends BaseActivity {
     BottomNavigationView bottomNavigationView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.progress)
+    ProgressBar progressBar;
+
 
     private Unbinder unbinder;
     protected VideoFragment videoFragment;
@@ -99,7 +105,9 @@ public class MainActivity extends BaseActivity {
                 backPressAt = new Date();
                 return;
             } else {
-                super.onBackPressed();
+                com.fly.video.downloader.core.app.Process.background(this);
+                //super.onBackPressed();
+                return;
             }
         }
 
@@ -119,18 +127,17 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        fromSend = false;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
+        showFragment(videoFragment);
+        Recv recv = new Recv(intent);
+        if (recv.isActionSend() && videoFragment.isAdded()) {
+            fromSend = true;
+            videoFragment.Analyze(recv.getContent());
+        }
 
-    @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
     }
 
     @Override
@@ -138,6 +145,12 @@ public class MainActivity extends BaseActivity {
         //finish();
         onBackPressed();
         return super.onSupportNavigateUp();
+    }
+
+    public void setMainProgress(int progress)
+    {
+        if (progress >= 100) progress = 0;
+        progressBar.setProgress(progress);
     }
 
     public void showVideoSearchFragment()
