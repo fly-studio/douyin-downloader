@@ -3,17 +3,17 @@ package com.fly.video.downloader.layout.listener;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fly.iconify.widget.IconTextView;
+import com.fly.video.downloader.GlideApp;
 import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.core.io.Storage;
@@ -23,7 +23,6 @@ import com.fly.video.downloader.util.DownloadQueue;
 import com.fly.video.downloader.util.content.Downloader;
 import com.fly.video.downloader.util.content.FileStorage;
 import com.fly.video.downloader.util.content.Video;
-import com.joanzapata.iconify.widget.IconTextView;
 
 import java.util.ArrayList;
 
@@ -31,6 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
 
 public class VideoFragmentListener extends FragmentListener implements AnalyzerTask.AnalyzeListener, DownloadQueue.QueueListener {
 
@@ -50,6 +50,8 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
     TextureView textureView;
     @BindView(R.id.video_downloaded)
     LinearLayout textDownloaded;
+    @BindView(R.id.video_pause)
+    IconTextView iconVideoPause;
 
     PlayerListener playerListener;
 
@@ -65,8 +67,10 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
     {
         unbinder = ButterKnife.bind(this, view);
         textDownloaded.setVisibility(View.INVISIBLE);
+        iconVideoPause.setVisibility(View.INVISIBLE);
 
         playerListener = new PlayerListener(context, textureView);
+        playerListener.setPlayerChangeListener(mPlayerChangeListener);
     }
 
     @Override
@@ -88,6 +92,18 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
             playerListener.resumeVideo();
     }
 
+    public void reset() {
+        if (playerListener != null)
+            playerListener.resetVideo();
+    }
+
+    private PlayerListener.IPlayerChangeListener mPlayerChangeListener = new PlayerListener.IPlayerChangeListener() {
+        @Override
+        public void onChange(PlayerListener.STATUS status) {
+            iconVideoPause.setVisibility(status == PlayerListener.STATUS.PAUSE ? View.VISIBLE : View.INVISIBLE);
+        }
+    };
+
     @Override
     public void onAnalyzed(Video video)
     {
@@ -97,8 +113,16 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
             nickname.setText(video.getUser().getNickname());
             content.setText(video.getTitle());
 
-            downloadQueue.add("avatar_thumb-" + video.getUser().getId(), new Downloader(video.getUser().getAvatarThumbUrl()).setFileAsCache(FileStorage.TYPE.IMAGE, "avatar_thumb-" + video.getUser().getId()));
+            //downloadQueue.add("avatar_thumb-" + video.getUser().getId(), new Downloader(video.getUser().getAvatarThumbUrl()).setFileAsCache(FileStorage.TYPE.IMAGE, "avatar_thumb-" + video.getUser().getId()));
             //downloadQueue.add("cover-" + video.getId(), new Downloader(video.getCoverUrl(), FileStorage.TYPE.IMAGE, "cover-" + video.getId()).saveToCache());
+
+            GlideApp.with(fragment)
+                    .load(video.getUser().getAvatarThumbUrl())
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.drawable.ic_notifications_black_24dp)
+                    .skipMemoryCache(true)
+                    .circleCrop()
+                    .into(avatar);
 
             Downloader videoDownloader = new Downloader(video.getUrl()).setFileAsDCIM(FileStorage.TYPE.VIDEO, "video-"+ video.getId() + ".mp4");
 
@@ -144,10 +168,6 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
                 bitmap = BitmapFactory.decodeFile(downloader.getFile().getAbsolutePath());
                 cover.setImageBitmap(bitmap);
                 break;*/
-            case "avatar_thumb":
-                bitmap = BitmapFactory.decodeFile(downloader.getFile().getAbsolutePath());
-                avatar.setImageBitmap(bitmap);
-                break;
             case "video":
                 Storage.rescanGallery(this.context, downloader.getFile());
                 break;
@@ -186,4 +206,6 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
         com.fly.video.downloader.core.app.Process.background((Activity) context);
 
     }
+
+
 }

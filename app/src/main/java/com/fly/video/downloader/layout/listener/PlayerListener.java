@@ -1,9 +1,7 @@
 package com.fly.video.downloader.layout.listener;
 
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.Context;
-import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.media.AudioManager;
@@ -13,8 +11,6 @@ import android.support.constraint.solver.widgets.Rectangle;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.fly.video.downloader.core.listener.ActivityListener;
@@ -23,10 +19,19 @@ import java.io.FileDescriptor;
 
 public class PlayerListener extends ActivityListener {
 
+    enum STATUS {
+        NONE,
+        LOADED,
+        PLAYING,
+        PAUSE,
+        STOP,
+    }
+
     protected TextureView textureView;
     private Surface surface;
     private MediaPlayer player;
-    private boolean loaded = false;
+    private STATUS status = STATUS.NONE;
+    private IPlayerChangeListener iPlayerChangeListener;
 
     public PlayerListener(Context context, TextureView textureView) {
         super(context);
@@ -35,7 +40,6 @@ public class PlayerListener extends ActivityListener {
         textureView.setClickable(true);
         textureView.setSurfaceTextureListener(mSurfaceTextureListener);
         textureView.setOnClickListener(mTextureViewOnClickListener);
-
 
         player = new MediaPlayer();
         player.setLooping(true);
@@ -48,12 +52,16 @@ public class PlayerListener extends ActivityListener {
 
     }
 
+    protected void setPlayerChangeListener(IPlayerChangeListener iPlayerChangeListener)
+    {
+        this.iPlayerChangeListener = iPlayerChangeListener;
+    }
+
     protected void playVideo(final Uri video_uri) {
         //new Thread(new Runnable() {
         //    public void run() {
                 try {
-                    player.reset();
-                    loaded= false;
+                    resetVideo();
                     player.setDataSource(getContext(), video_uri);
                     player.prepareAsync();
                 } catch (Exception e) { // I can split the exceptions to get which error i need.
@@ -67,8 +75,7 @@ public class PlayerListener extends ActivityListener {
         //new Thread(new Runnable() {
         //    public void run() {
                 try {
-                    player.reset();
-                    loaded= false;
+                    resetVideo();
                     player.setDataSource(getContext(), Uri.parse(video_url));
                     player.prepareAsync();
                 } catch (Exception e) { // I can split the exceptions to get which error i need.
@@ -82,8 +89,7 @@ public class PlayerListener extends ActivityListener {
         //new Thread(new Runnable() {
         //    public void run() {
                 try {
-                    player.reset();
-                    loaded= false;
+                    resetVideo();
                     player.setDataSource(fd);
                     player.prepareAsync();
                 } catch (Exception e) { // I can split the exceptions to get which error i need.
@@ -100,9 +106,9 @@ public class PlayerListener extends ActivityListener {
 
             if (player != null) {
                 if (player.isPlaying()) {
-                    player.pause();
-                } else {
-                    player.start();
+                    pauseVideo();
+                } else if (status != STATUS.NONE) { // 设置过setDataSource
+                    resumeVideo();
                 }
             }
 
@@ -119,7 +125,7 @@ public class PlayerListener extends ActivityListener {
     private MediaPlayer.OnVideoSizeChangedListener mMediaPlayerOnVideoSizeChangedListener = new MediaPlayer.OnVideoSizeChangedListener(){
         @Override
         public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
-            mediaPlayer.start();
+            playVideo();
         }
     };
 
@@ -130,7 +136,7 @@ public class PlayerListener extends ActivityListener {
                 surface = new Surface(surfaceTexture);
                 player.setSurface(surface);
             }
-            player.start();
+            playVideo();
         }
 
         @Override
@@ -141,9 +147,7 @@ public class PlayerListener extends ActivityListener {
         @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
             System.out.println("onSurfaceTextureDestroyed");
-            player.pause();
-            //player.reset();
-            //player.release();
+            pauseVideo();
             surface = null;
             return false;
         }
@@ -157,14 +161,16 @@ public class PlayerListener extends ActivityListener {
     private MediaPlayer.OnPreparedListener mMediaPlayerOnPreparedListener = new MediaPlayer.OnPreparedListener() {
         @Override
         public void onPrepared(MediaPlayer mediaPlayer) {
+            synchronized (MediaPlayer.OnPreparedListener.class) {
+                status = STATUS.LOADED;
+            }
 
             // Adjust the size of the video
             // so it fits on the screen
-
             updateTextureViewSize(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
-            loaded = true;
+
             mediaPlayer.setLooping(true);
-            mediaPlayer.start();
+            playVideo();
         }
     };
 
@@ -234,39 +240,68 @@ public class PlayerListener extends ActivityListener {
     private MediaPlayer.OnCompletionListener mMediaPlayerOnCompletionListener = new MediaPlayer.OnCompletionListener(){
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
-            //mediaPlayer.stop();
+            //stopVideo();
         }
     };
 
-    public void resetVideo()
+    public synchronized void playVideo()
+    {
+        if (player != null && status != STATUS.NONE)
+        {
+            player.start();
+            status = STATUS.PLAYING;
+            if (iPlayerChangeListener != null) iPlayerChangeListener.onChange(status);
+        }
+    }
+
+    public synchronized void resetVideo()
     {
         if (player != null)
+        {
             player.reset();
-        loaded = false;
-    }
-
-    public void pauseVideo()
-    {
-        if (player != null)
-        {
-            if (loaded && player.isPlaying()) player.pause();
+            status = STATUS.NONE;
+            if (iPlayerChangeListener != null) iPlayerChangeListener.onChange(status);
         }
     }
 
-    public void resumeVideo()
+    public synchronized void pauseVideo()
     {
-        if (player != null)
+        if (player != null && status != STATUS.NONE)
         {
-            if (loaded) player.start();
+            if (player.isPlaying()) {
+                player.pause();
+                status = STATUS.PAUSE;
+                if (iPlayerChangeListener != null) iPlayerChangeListener.onChange(status);
+            }
         }
     }
 
-    public void destoryVideo() {
+    public synchronized void resumeVideo()
+    {
+        playVideo();
+    }
+
+    public synchronized void stopVideo()
+    {
+        if (player != null && status != STATUS.NONE)
+        {
+            player.stop();
+            status = STATUS.STOP;
+            if (iPlayerChangeListener != null) iPlayerChangeListener.onChange(status);
+        }
+    }
+
+    public synchronized void destoryVideo() {
         if (player != null)
         {
-            if (loaded && player.isPlaying()) player.stop();
-            loaded = false;
+            player.stop();
             player.release();
+            status = STATUS.NONE;
+            if (iPlayerChangeListener != null) iPlayerChangeListener.onChange(status);
         }
+    }
+
+    public interface IPlayerChangeListener {
+        void onChange(STATUS status);
     }
 }

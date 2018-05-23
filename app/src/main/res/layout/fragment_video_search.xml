@@ -20,16 +20,32 @@
                 android:id="@+id/video_search_editor"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:hint="@string/editor_hint"
-                android:minLines="6"
-                android:text=""
                 android:ems="10"
                 android:gravity="left|top"
-                android:inputType="textMultiLine"
+                android:hint="@string/editor_hint"
                 android:imeOptions="actionSearch"
+                android:inputType="textMultiLine"
+                android:minLines="6"
+                android:text="" />
+
+            <com.fly.iconify.widget.IconTextView
+                android:id="@+id/video_search_btn_clear"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_alignTop="@+id/video_search_editor"
+                android:layout_alignEnd="@+id/video_search_editor"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="{fal-times}"
+                android:shadowColor="#22000000"
+                android:shadowDx="3"
+                android:shadowDy="3"
+                android:shadowRadius="1"
+                android:textSize="28sp"
+                android:textColor="#FFF"
                 />
 
-            <com.joanzapata.iconify.widget.IconTextView
+            <com.fly.iconify.widget.IconTextView
                 android:id="@+id/video_search_btn_enter"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -37,7 +53,7 @@
                 android:layout_alignEnd="@+id/video_search_editor"
                 android:layout_marginBottom="10dp"
                 android:layout_marginEnd="10dp"
-                android:text="{fa-search}"
+                android:text="{fal-search}"
                 android:shadowColor="#22000000"
                 android:shadowDx="3"
                 android:shadowDy="3"

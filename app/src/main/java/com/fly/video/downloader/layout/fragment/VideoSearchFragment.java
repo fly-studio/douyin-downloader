@@ -108,6 +108,12 @@ public class VideoSearchFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @OnClick(R.id.video_search_btn_clear)
+    public void onClear()
+    {
+        editor.setText("");
+    }
+
     @OnClick(R.id.video_search_btn_enter)
     public void onSearch()
     {

@@ -127,6 +127,8 @@ public class VideoFragment extends Fragment {
 
     public void Analyze(String text)
     {
+        mFragmentListener.reset();
+
         Toast.makeText(getActivity(), R.string.start_analyzing, Toast.LENGTH_SHORT).show();
 
         AnalyzerTask analyzerTask = new AnalyzerTask(getActivity(), mFragmentListener);

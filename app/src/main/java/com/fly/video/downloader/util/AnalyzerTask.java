@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.core.exception.URLInvalidException;
 import com.fly.video.downloader.core.os.AsyncTaskResult;
-import com.fly.video.downloader.util.app.Douyin;
+import com.fly.video.downloader.util.app.DouyinV2;
 import com.fly.video.downloader.util.content.Video;
 import com.fly.video.downloader.util.contract.VideoParser;
 import com.fly.video.downloader.util.exception.VideoException;
@@ -28,7 +28,7 @@ public class AnalyzerTask extends AsyncTask<String, Integer, AsyncTaskResult<Vid
         VideoParser parser = null;
 
         if (str.contains(this.context.getString(R.string.url_douyin))) {
-            parser = Douyin.getInstance(this.context);
+            parser = DouyinV2.getInstance(this.context);
         }
 
         try {

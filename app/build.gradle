@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
         applicationId "com.fly.video.downloader"
         minSdkVersion 19
-        targetSdkVersion 21
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -16,28 +16,42 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dependencies {
+        implementation fileTree(dir: 'libs', include: ['*.jar'])
+        implementation 'com.android.support:appcompat-v7:27.1.1'
+        implementation 'com.android.support:design:27.1.1'
+        implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+        implementation 'com.android.support:support-v4:27.1.1'
+        implementation 'com.android.support:recyclerview-v7:27.1.1'
+        testImplementation 'junit:junit:4.12'
+        androidTestImplementation 'com.android.support.test:runner:1.0.2'
+        androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+        //okhttp
+        implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+        //implementation 'com.squareup.okio:okio:1.14.0'
+
+        //butter knife
+        implementation 'com.jakewharton:butterknife:8.8.1'
+        annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+        //commons-lang
+        implementation 'org.apache.commons:commons-lang3:3.7'
+
+        //jsoup
+        implementation 'org.jsoup:jsoup:1.11.3'
+
+        //glide
+        implementation 'com.github.bumptech.glide:glide:4.7.1'
+        annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+        implementation 'com.github.bumptech.glide:okhttp3-integration:4.7.1' // glide use okhttps download
+        implementation 'jp.wasabeef:glide-transformations:3.3.0'
+        //implementation 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1' // If you want to use the GPU Filters
+
+        //iconify
+        implementation (name: 'iconify-debug', ext: 'aar')
+        implementation (name: 'iconify-fontawesome-debug', ext: 'aar')
+
+    }
 }
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    implementation 'com.android.support:support-v4:26.1.0'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
-    //ok
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    //implementation 'com.squareup.okio:okio:1.14.0'
-    //butter knife
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    //icon-fontawesome
-    implementation 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2' // (v4.5)
-    //commons-lang
-    implementation 'org.apache.commons:commons-lang3:3.7'
-
-}

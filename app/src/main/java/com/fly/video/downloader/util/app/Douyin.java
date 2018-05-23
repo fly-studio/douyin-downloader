@@ -96,7 +96,7 @@ public class Douyin extends VideoParser {
             video.setGroup_id(json.getLong("group_id"));
             video.setAweme_id(json.getLong("aweme_id"));
             video.setMedia_type(json.getInt("media_type"));
-        } catch (Exception e) {}
+        } catch (Exception e) {e.printStackTrace();}
 
         video.setUser(parseUser(json));
 

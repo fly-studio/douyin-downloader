@@ -32,8 +32,8 @@
 
         <ImageView
             android:id="@+id/video_avatar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/avatar_width"
+            android:layout_height="@dimen/avatar_width"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:layout_marginBottom="170dp"
@@ -66,41 +66,52 @@
             android:text="Content" />
 
         <LinearLayout
+            android:id="@+id/video_downloaded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:id="@+id/video_downloaded"
+            android:layout_alignBottom="@+id/video_content"
+            android:layout_alignEnd="@+id/video_content"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical">
-            <com.joanzapata.iconify.widget.IconTextView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+
+            <com.fly.iconify.widget.IconTextView
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
                 android:shadowColor="#22000000"
+                android:textAlignment="center"
                 android:shadowDx="3"
                 android:shadowDy="3"
                 android:shadowRadius="1"
-                android:text="{fa-download}"
+                android:text="{fal-download}"
                 android:textColor="#CCC"
-                android:textSize="60dp" />
+                android:textSize="32sp" />
+
             <TextView
                 android:id="@+id/editText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="下载完成" />
+                android:text="@string/download_complete"
+                android:textColor="#CCC"
+                />
         </LinearLayout>
 
-        <com.joanzapata.iconify.widget.IconTextView
+        <com.fly.iconify.widget.IconTextView
+            android:id="@+id/video_pause"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:text="{fa-play 60dp}"
+            android:textColor="#80FFFFFF" />
+
+        <com.fly.iconify.widget.IconTextView
             android:id="@+id/video_close"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_alignEnd="@+id/video_content"
             android:layout_alignTop="@+id/video_avatar"
-            android:shadowColor="#22000000"
-            android:shadowDx="3"
-            android:shadowDy="3"
-            android:shadowRadius="1"
-            android:text="{fa-times}"
-            android:textColor="@color/md_white_1000"
-            android:textSize="40sp" />
+            android:text="{fal-times 24dp}"
+            android:textColor="#FFF"
+            />
 
 
     </RelativeLayout>

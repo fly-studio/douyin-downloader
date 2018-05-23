@@ -1,5 +1,6 @@
 package com.fly.video.downloader.util.content;
 
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.fly.video.downloader.core.io.Storage;
@@ -10,7 +11,7 @@ import com.fly.video.downloader.util.exception.DownloadFileException;
 public class Downloader {
 
     public enum STATUS {
-        PREPARATIVE,
+        NONE,
         DOWNLOADING,
         DONE,
         CANCELED,
@@ -20,7 +21,7 @@ public class Downloader {
     protected String url = null;
     protected long total = 0;
     protected long loaded = 0;
-    protected STATUS status = STATUS.PREPARATIVE;
+    protected STATUS status = STATUS.NONE;
 
     protected DownloaderTask task = null;
     protected DownloaderListener listener;
@@ -64,7 +65,7 @@ public class Downloader {
     }
 
     public boolean isReparative() {
-        return status == STATUS.PREPARATIVE ;
+        return status == STATUS.NONE ;
     }
 
     public boolean isDownloaded() {
@@ -142,10 +143,10 @@ public class Downloader {
         if (file == null)
             throw new DownloadFileException("Please set the File before 'start'");
 
-        if (status == STATUS.PREPARATIVE) {
+        if (status == STATUS.NONE) {
             status = STATUS.DOWNLOADING;
             loaded = total = 0;
-            task.execute();
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
