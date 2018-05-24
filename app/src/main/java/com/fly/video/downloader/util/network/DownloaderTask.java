@@ -1,9 +1,8 @@
-package com.fly.video.downloader.util;
+package com.fly.video.downloader.util.network;
 
 import android.os.AsyncTask;
 
 import com.fly.video.downloader.core.os.AsyncTaskResult;
-import com.fly.video.downloader.util.content.Downloader;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;

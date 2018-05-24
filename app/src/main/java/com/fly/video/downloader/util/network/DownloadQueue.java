@@ -1,7 +1,6 @@
-package com.fly.video.downloader.util;
+package com.fly.video.downloader.util.network;
 
-import com.fly.video.downloader.util.content.Downloader;
-import com.fly.video.downloader.util.content.FileStorage;
+import com.fly.video.downloader.util.io.FileStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;

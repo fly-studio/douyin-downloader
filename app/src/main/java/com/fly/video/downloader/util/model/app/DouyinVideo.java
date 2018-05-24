@@ -1,8 +1,6 @@
-package com.fly.video.downloader.util.app;
+package com.fly.video.downloader.util.model.app;
 
-import com.fly.video.downloader.util.content.Video;
-
-import java.util.Date;
+import com.fly.video.downloader.util.model.Video;
 
 public class DouyinVideo extends Video {
 
@@ -10,7 +8,7 @@ public class DouyinVideo extends Video {
     protected int media_type = 0;
     protected long group_id = 0;
     protected long aweme_id = 0;
-    protected Date create_time = null;
+    //protected Date create_time = null;
 
     public String getDynamicCoverUrl() {
         return dynamicCoverUrl;
@@ -44,13 +42,13 @@ public class DouyinVideo extends Video {
         this.aweme_id = aweme_id;
     }
 
-    public Date getCreate_time() {
+    /*public Date getCreate_time() {
         return create_time;
     }
 
     public void setCreate_time(Date create_time) {
         this.create_time = create_time;
-    }
+    }*/
 
     public String[] getUrls() {
         return new String[]{

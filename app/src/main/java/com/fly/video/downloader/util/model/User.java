@@ -1,4 +1,4 @@
-package com.fly.video.downloader.util.content;
+package com.fly.video.downloader.util.model;
 
 public class User {
     protected String id = null;

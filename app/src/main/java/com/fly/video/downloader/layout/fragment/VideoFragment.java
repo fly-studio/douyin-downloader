@@ -14,8 +14,8 @@ import android.widget.Toast;
 import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.layout.listener.VideoFragmentListener;
-import com.fly.video.downloader.util.AnalyzerTask;
 import com.fly.video.downloader.util.content.Recv;
+import com.fly.video.downloader.util.content.analyzer.AnalyzerTask;
 
 
 /**

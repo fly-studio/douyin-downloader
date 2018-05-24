@@ -38,7 +38,9 @@ android {
         //commons-lang
         implementation 'org.apache.commons:commons-lang3:3.7'
 
-        //jsoup
+        //json / jsoup
+        implementation 'com.squareup.moshi:moshi:1.6.0'
+        implementation 'com.squareup.moshi:moshi-adapters:1.6.0'
         implementation 'org.jsoup:jsoup:1.11.3'
 
         //glide

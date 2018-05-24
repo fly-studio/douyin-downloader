@@ -3,7 +3,7 @@ package com.fly.video.downloader.util.contract;
 import android.content.Context;
 
 import com.fly.video.downloader.core.contract.AbstractSingleton;
-import com.fly.video.downloader.util.content.Video;
+import com.fly.video.downloader.util.model.Video;
 
 abstract public class VideoParser extends AbstractSingleton {
 

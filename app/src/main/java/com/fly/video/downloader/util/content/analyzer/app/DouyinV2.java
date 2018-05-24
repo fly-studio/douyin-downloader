@@ -1,4 +1,4 @@
-package com.fly.video.downloader.util.app;
+package com.fly.video.downloader.util.content.analyzer.app;
 
 import android.content.Context;
 import android.util.Patterns;
@@ -9,6 +9,8 @@ import com.fly.video.downloader.core.exception.HttpException;
 import com.fly.video.downloader.core.exception.URLInvalidException;
 import com.fly.video.downloader.util.contract.VideoParser;
 import com.fly.video.downloader.util.exception.VideoException;
+import com.fly.video.downloader.util.model.app.DouyinUser;
+import com.fly.video.downloader.util.model.app.DouyinVideo;
 
 import org.json.JSONException;
 import org.json.JSONObject;

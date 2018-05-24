@@ -1,12 +1,12 @@
-package com.fly.video.downloader.util.content;
+package com.fly.video.downloader.util.network;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.fly.video.downloader.core.io.Storage;
 import com.fly.video.downloader.core.security.Encrypt;
-import com.fly.video.downloader.util.DownloaderTask;
 import com.fly.video.downloader.util.exception.DownloadFileException;
+import com.fly.video.downloader.util.io.FileStorage;
 
 public class Downloader {
 

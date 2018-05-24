@@ -18,11 +18,12 @@ import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.core.io.Storage;
 import com.fly.video.downloader.core.listener.FragmentListener;
-import com.fly.video.downloader.util.AnalyzerTask;
-import com.fly.video.downloader.util.DownloadQueue;
-import com.fly.video.downloader.util.content.Downloader;
-import com.fly.video.downloader.util.content.FileStorage;
-import com.fly.video.downloader.util.content.Video;
+import com.fly.video.downloader.util.content.History;
+import com.fly.video.downloader.util.content.analyzer.AnalyzerTask;
+import com.fly.video.downloader.util.io.FileStorage;
+import com.fly.video.downloader.util.model.Video;
+import com.fly.video.downloader.util.network.DownloadQueue;
+import com.fly.video.downloader.util.network.Downloader;
 
 import java.util.ArrayList;
 
@@ -109,12 +110,17 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
     {
         synchronized (VideoFragmentListener.class) {
             this.video = video;
+
+            System.out.println(video.toJson());
+            History.put(video);
+
             downloadQueue.clear();
             nickname.setText(video.getUser().getNickname());
             content.setText(video.getTitle());
 
             //downloadQueue.add("avatar_thumb-" + video.getUser().getId(), new Downloader(video.getUser().getAvatarThumbUrl()).setFileAsCache(FileStorage.TYPE.IMAGE, "avatar_thumb-" + video.getUser().getId()));
             //downloadQueue.add("cover-" + video.getId(), new Downloader(video.getCoverUrl(), FileStorage.TYPE.IMAGE, "cover-" + video.getId()).saveToCache());
+            textDownloaded.setVisibility(View.INVISIBLE);
 
             GlideApp.with(fragment)
                     .load(video.getUser().getAvatarThumbUrl())

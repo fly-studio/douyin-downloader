@@ -1,4 +1,4 @@
-package com.fly.video.downloader.util.app;
+package com.fly.video.downloader.util.content.analyzer.app;
 
 import android.content.Context;
 import android.util.Patterns;
@@ -9,12 +9,13 @@ import com.fly.video.downloader.core.exception.HttpException;
 import com.fly.video.downloader.core.exception.URLInvalidException;
 import com.fly.video.downloader.util.contract.VideoParser;
 import com.fly.video.downloader.util.exception.VideoException;
+import com.fly.video.downloader.util.model.app.DouyinUser;
+import com.fly.video.downloader.util.model.app.DouyinVideo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -92,7 +93,7 @@ public class Douyin extends VideoParser {
             video.setWidth(v.getInt("width"));
             video.setHeight(v.getInt("height"));
             video.setDynamicCoverUrl(v.getJSONObject("dynamic_cover").getJSONArray("url_list").getString(0));
-            video.setCreate_time(new Date(json.getLong("create_time") * 1000));
+            //video.setCreate_time(new Date(json.getLong("create_time") * 1000));
             video.setGroup_id(json.getLong("group_id"));
             video.setAweme_id(json.getLong("aweme_id"));
             video.setMedia_type(json.getInt("media_type"));
