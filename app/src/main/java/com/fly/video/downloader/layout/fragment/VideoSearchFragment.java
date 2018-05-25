@@ -123,7 +123,7 @@ public class VideoSearchFragment extends Fragment {
             Toast.makeText(getActivity(), R.string.noURL, Toast.LENGTH_SHORT).show();
         } else {
             getActivity().getSupportFragmentManager().beginTransaction().hide(this).commit();
-            ((MainActivity)getActivity()).onVideoStringChange(str);
+            ((MainActivity)getActivity()).onVideoChange(str);
             editor.setText("");
         }
 

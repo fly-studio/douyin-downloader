@@ -16,6 +16,7 @@ import com.fly.video.downloader.R;
 import com.fly.video.downloader.layout.listener.VideoFragmentListener;
 import com.fly.video.downloader.util.content.Recv;
 import com.fly.video.downloader.util.content.analyzer.AnalyzerTask;
+import com.fly.video.downloader.util.model.Video;
 
 
 /**
@@ -47,15 +48,21 @@ public class VideoFragment extends Fragment {
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+        if (mFragmentListener != null)
+        {
+            if (hidden)  mFragmentListener.pause();
+            else mFragmentListener.resume();
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-    }
-
-    public void onChange(String str)
-    {
-        Analyze(str);
     }
 
     @Override
@@ -122,7 +129,6 @@ public class VideoFragment extends Fragment {
         super.onResume();
 
         mFragmentListener.resume();
-
     }
 
     public void Analyze(String text)
@@ -133,6 +139,11 @@ public class VideoFragment extends Fragment {
 
         AnalyzerTask analyzerTask = new AnalyzerTask(getActivity(), mFragmentListener);
         analyzerTask.execute(text);
+    }
+
+    public void Analyze(Video video)
+    {
+        mFragmentListener.onAnalyzed(video);
     }
 
 }

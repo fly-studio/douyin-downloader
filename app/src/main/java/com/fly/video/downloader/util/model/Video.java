@@ -1,12 +1,9 @@
 package com.fly.video.downloader.util.model;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter;
+import com.fly.video.downloader.core.contract.AbstractJsonable;
 
-import java.util.Date;
+abstract public class Video extends AbstractJsonable {
 
-abstract public class Video {
     protected String id = null;
     protected String title = null;
     protected String content = null;
@@ -83,34 +80,6 @@ abstract public class Video {
 
     public void setHeight(int height) {
         this.height = height;
-    }
-
-    public static <T extends Video> T fromJSON(final Class<T> clazz, String json)
-    {
-        Moshi moshi = new Moshi.Builder()
-                .add(Date.class, new Rfc3339DateJsonAdapter())
-                .build();
-        JsonAdapter<T> jsonAdapter = moshi.adapter(clazz);
-        try {
-            return jsonAdapter.fromJson(json);
-        } catch (Exception e) {
-
-        }
-        return null;
-    }
-
-    public <T extends Video> String toJson(final Class<T> clazz)
-    {
-        Moshi moshi = new Moshi.Builder()
-                .add(Date.class, new Rfc3339DateJsonAdapter())
-                .build();
-        JsonAdapter<T> jsonAdapter = moshi.adapter(clazz);
-        return jsonAdapter.toJson((T)this);
-    }
-
-    public <T extends Video> String toJson()
-    {
-        return toJson(this.getClass());
     }
 
 }

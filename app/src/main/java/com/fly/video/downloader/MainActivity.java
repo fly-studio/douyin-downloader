@@ -16,6 +16,7 @@ import com.fly.video.downloader.layout.fragment.HistoryFragment;
 import com.fly.video.downloader.layout.fragment.VideoFragment;
 import com.fly.video.downloader.layout.fragment.VideoSearchFragment;
 import com.fly.video.downloader.util.content.Recv;
+import com.fly.video.downloader.util.model.Video;
 
 import java.util.Date;
 
@@ -81,7 +82,7 @@ public class MainActivity extends BaseActivity {
 
 
         videoFragment = VideoFragment.newInstance();
-        historyFragment = HistoryFragment.newInstance(1);
+        historyFragment = HistoryFragment.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.full_pager, videoFragment).add(R.id.view_pager, historyFragment).hide(historyFragment).show(videoFragment).commit();
 
@@ -138,7 +139,6 @@ public class MainActivity extends BaseActivity {
             fromSend = true;
             videoFragment.Analyze(recv.getContent());
         }
-
     }
 
     @Override
@@ -166,11 +166,22 @@ public class MainActivity extends BaseActivity {
         getSupportFragmentManager().beginTransaction().addToBackStack("video").commit();
     }
 
-    public void onVideoStringChange(String str)
+    public void onVideoChange(String str)
     {
         //Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         showFragment(videoFragment);
-        videoFragment.onChange(str);
+        videoFragment.Analyze(str);
+    }
+
+    public void onVideoChange(Video video)
+    {
+        showFragment(videoFragment);
+        videoFragment.Analyze(video);
+    }
+
+    public void onHistoryAppend(Video video)
+    {
+        historyFragment.perpendHistory(video);
     }
 
 }

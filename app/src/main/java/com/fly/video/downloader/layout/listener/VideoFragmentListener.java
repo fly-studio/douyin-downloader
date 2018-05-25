@@ -18,7 +18,6 @@ import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.core.io.Storage;
 import com.fly.video.downloader.core.listener.FragmentListener;
-import com.fly.video.downloader.util.content.History;
 import com.fly.video.downloader.util.content.analyzer.AnalyzerTask;
 import com.fly.video.downloader.util.io.FileStorage;
 import com.fly.video.downloader.util.model.Video;
@@ -35,7 +34,7 @@ import butterknife.Unbinder;
 
 public class VideoFragmentListener extends FragmentListener implements AnalyzerTask.AnalyzeListener, DownloadQueue.QueueListener {
 
-    protected Video video = null;
+    public Video video = null;
     protected DownloadQueue downloadQueue = new DownloadQueue();
 
     private Unbinder unbinder;
@@ -101,7 +100,8 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
     private PlayerListener.IPlayerChangeListener mPlayerChangeListener = new PlayerListener.IPlayerChangeListener() {
         @Override
         public void onChange(PlayerListener.STATUS status) {
-            iconVideoPause.setVisibility(status == PlayerListener.STATUS.PAUSE ? View.VISIBLE : View.INVISIBLE);
+            if (iconVideoPause != null)
+                iconVideoPause.setVisibility(status == PlayerListener.STATUS.PAUSE ? View.VISIBLE : View.INVISIBLE);
         }
     };
 
@@ -109,10 +109,14 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
     public void onAnalyzed(Video video)
     {
         synchronized (VideoFragmentListener.class) {
-            this.video = video;
+            if (this.video == video)
+                return;
 
-            System.out.println(video.toJson());
-            History.put(video);
+            this.video = video;
+            reset();
+
+            ((MainActivity)fragment.getActivity()).onHistoryAppend(video);
+
 
             downloadQueue.clear();
             nickname.setText(video.getUser().getNickname());
