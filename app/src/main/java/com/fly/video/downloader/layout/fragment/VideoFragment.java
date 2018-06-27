@@ -143,7 +143,12 @@ public class VideoFragment extends Fragment {
 
     public void Analyze(Video video)
     {
-        mFragmentListener.onAnalyzed(video);
+        Analyze(video, false);
+    }
+
+    public void Analyze(Video video, boolean fromHistory)
+    {
+        mFragmentListener.onAnalyzed(video, fromHistory);
     }
 
 }

@@ -108,6 +108,11 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
     @Override
     public void onAnalyzed(Video video)
     {
+        onAnalyzed(video, false);
+    }
+
+    public void onAnalyzed(Video video, boolean fromHistory)
+    {
         synchronized (VideoFragmentListener.class) {
             if (this.video == video)
                 return;
@@ -115,8 +120,8 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
             this.video = video;
             reset();
 
-            ((MainActivity)fragment.getActivity()).onHistoryAppend(video);
-
+            if (!fromHistory)
+                ((MainActivity)fragment.getActivity()).onHistoryAppend(video);
 
             downloadQueue.clear();
             nickname.setText(video.getUser().getNickname());

@@ -24,7 +24,7 @@ public class HistoryFragmentListener extends FragmentListener {
 
     public void onListFragmentInteraction(HistoryRecyclerViewAdapter.ViewHolder holder)
     {
-        ((MainActivity)fragment.getActivity()).onVideoChange(holder.video);
+        ((MainActivity)fragment.getActivity()).onVideoChange(holder.video, true);
     }
 
     @Override

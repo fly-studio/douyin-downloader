@@ -175,8 +175,13 @@ public class MainActivity extends BaseActivity {
 
     public void onVideoChange(Video video)
     {
+        onVideoChange(video, false);
+    }
+
+    public void onVideoChange(Video video, boolean fromHistory)
+    {
         showFragment(videoFragment);
-        videoFragment.Analyze(video);
+        videoFragment.Analyze(video, fromHistory);
     }
 
     public void onHistoryAppend(Video video)

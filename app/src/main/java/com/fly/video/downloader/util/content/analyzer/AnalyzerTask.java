@@ -27,7 +27,7 @@ public class AnalyzerTask extends AsyncTask<String, Integer, AsyncTaskResult<Vid
         String str = params[0];
         VideoParser parser = null;
 
-        if (str.contains(this.context.getString(R.string.url_douyin))) {
+        if (str.matches(this.context.getString(R.string.url_douyin_regex))) {
             parser = DouyinV2.getInstance(this.context);
         }
 

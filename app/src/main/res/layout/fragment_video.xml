@@ -105,8 +105,10 @@
 
         <com.fly.iconify.widget.IconTextView
             android:id="@+id/video_close"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:textAlignment="center"
             android:layout_alignEnd="@+id/video_content"
             android:layout_alignTop="@+id/video_avatar"
             android:text="{fal-times 24dp}"
