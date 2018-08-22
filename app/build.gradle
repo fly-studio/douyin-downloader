@@ -54,6 +54,9 @@ android {
         implementation (name: 'iconify-debug', ext: 'aar')
         implementation (name: 'iconify-fontawesome-debug', ext: 'aar')
 
+        //Ask perm
+        implementation 'com.github.florent37:runtime-permission:1.0.1'
+
     }
 }
 

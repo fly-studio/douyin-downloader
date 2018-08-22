@@ -39,7 +39,6 @@
             android:layout_marginBottom="170dp"
             android:layout_marginStart="20dp"
             android:src="@mipmap/ic_launcher_round"
-            android:background="@drawable/img"
             />
 
         <TextView

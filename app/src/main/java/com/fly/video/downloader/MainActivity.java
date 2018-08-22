@@ -1,5 +1,6 @@
 package com.fly.video.downloader;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,12 +18,19 @@ import com.fly.video.downloader.layout.fragment.VideoFragment;
 import com.fly.video.downloader.layout.fragment.VideoSearchFragment;
 import com.fly.video.downloader.util.content.Recv;
 import com.fly.video.downloader.util.model.Video;
+import com.github.florent37.runtimepermission.PermissionResult;
+import com.github.florent37.runtimepermission.RuntimePermission;
+import com.github.florent37.runtimepermission.callbacks.AcceptedCallback;
+import com.github.florent37.runtimepermission.callbacks.PermissionListener;
 
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.github.florent37.runtimepermission.RuntimePermission.askPermission;
 
 public class MainActivity extends BaseActivity {
     @BindView(R.id.navigation)
@@ -87,6 +95,18 @@ public class MainActivity extends BaseActivity {
         ft.add(R.id.full_pager, videoFragment).add(R.id.view_pager, historyFragment).hide(historyFragment).show(videoFragment).commit();
 
         fromSend = this.getIntent() != null && Intent.ACTION_SEND.equals(this.getIntent().getAction());
+
+        askPermission(this).ask(new PermissionListener() {
+            @Override
+            public void onAccepted(RuntimePermission runtimePermission, List<String> accepted) {
+                Toast.makeText(MainActivity.this,"OK", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDenied(RuntimePermission runtimePermission, List<String> denied, List<String> foreverDenied) {
+                Toast.makeText(MainActivity.this,"Why?", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
