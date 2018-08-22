@@ -1,6 +1,5 @@
 package com.fly.video.downloader;
 
-import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,9 +17,7 @@ import com.fly.video.downloader.layout.fragment.VideoFragment;
 import com.fly.video.downloader.layout.fragment.VideoSearchFragment;
 import com.fly.video.downloader.util.content.Recv;
 import com.fly.video.downloader.util.model.Video;
-import com.github.florent37.runtimepermission.PermissionResult;
 import com.github.florent37.runtimepermission.RuntimePermission;
-import com.github.florent37.runtimepermission.callbacks.AcceptedCallback;
 import com.github.florent37.runtimepermission.callbacks.PermissionListener;
 
 import java.util.Date;
