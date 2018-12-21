@@ -36,6 +36,7 @@ public class HistoryFragment extends Fragment {
         adapter.perpendItem(video);
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +55,8 @@ public class HistoryFragment extends Fragment {
 
             //recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
             recyclerView.setAdapter(adapter);
+            adapter.setRecyclerView(recyclerView);
+            adapter.addOnScroll();
         }
         return view;
     }

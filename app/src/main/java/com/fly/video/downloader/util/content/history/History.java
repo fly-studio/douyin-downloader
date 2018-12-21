@@ -25,9 +25,7 @@ public class History {
             if (video != null)
                 videos.add(video);
         }
-        if (cursor != null) {
-            cursor.close();
-        }
+        cursor.close();
         db.close();
         dbHelper.close();
         return videos;

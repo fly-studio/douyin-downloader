@@ -37,4 +37,6 @@ public class HistoryFragmentListener extends FragmentListener {
     public void onDestroyView() {
         unbinder.unbind();
     }
+
+
 }

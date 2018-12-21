@@ -2,6 +2,8 @@ package com.fly.video.downloader.layout.listener;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
@@ -214,10 +216,14 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
 
     }
 
-
     @OnClick(R.id.video_close)
     public void onClose()
     {
+        PackageManager packageManager = context.getPackageManager();
+        //Intent intent = new Intent();
+        Intent intent = packageManager.getLaunchIntentForPackage("com.ss.android.ugc.aweme");
+        context.startActivity(intent);
+
         com.fly.video.downloader.core.app.Process.background((Activity) context);
 
     }

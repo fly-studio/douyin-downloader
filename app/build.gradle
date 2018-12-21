@@ -35,7 +35,7 @@ android {
         annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
         //commons-lang
-        implementation 'org.apache.commons:commons-lang3:3.7'
+        implementation 'org.apache.commons:commons-lang3:3.8.1'
 
         //json / jsoup
         implementation 'com.squareup.moshi:moshi:1.6.0'
