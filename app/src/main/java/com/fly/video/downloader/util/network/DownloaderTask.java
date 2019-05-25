@@ -44,6 +44,8 @@ public class DownloaderTask extends AsyncTask<Void, Long, AsyncTaskResult<Downlo
             tmpFile = downloader.getFile().createTempFile();
             Request request = new Request.Builder()
                     .url(downloader.getUrl())
+                    .removeHeader("User-Agent")
+                    .addHeader("User-Agent", "okhttp/1.0.0")
                     .build();
             Response response = client.newCall(request).execute();
             ResponseBody body = response.body();

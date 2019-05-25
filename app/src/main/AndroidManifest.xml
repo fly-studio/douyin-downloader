@@ -17,6 +17,7 @@
         android:appComponentFactory="action_settings"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme.Dark">
         <activity
             android:name=".MainActivity"
