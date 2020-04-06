@@ -2,13 +2,13 @@ package com.fly.video.downloader.core.os;
 
 public class AsyncTaskResult<T> {
     private T result;
-    private Exception error;
+    private Throwable error;
 
     public T getResult() {
         return result;
     }
 
-    public Exception getError() {
+    public Throwable getError() {
         return error;
     }
 
@@ -17,7 +17,7 @@ public class AsyncTaskResult<T> {
         this.result = result;
     }
 
-    public AsyncTaskResult(Exception error) {
+    public AsyncTaskResult(Throwable error) {
         super();
         this.error = error;
     }

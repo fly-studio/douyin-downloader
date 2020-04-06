@@ -165,7 +165,7 @@ public class DownloadQueue {
         }
 
         @Override
-        public void onDownloadError(Downloader downloader, Exception e) {
+        public void onDownloadError(Downloader downloader, Throwable e) {
 
             if (listener != null) listener.onDownloadError(getHash(downloader), downloader, e);
         }
@@ -177,7 +177,7 @@ public class DownloadQueue {
         void onDownloaded(String hash, Downloader downloader);
         void onDownloadProgress(String hash, Downloader downloader, long loaded, long total);
         void onDownloadCanceled(String hash, Downloader downloader);
-        void onDownloadError(String hash, Downloader downloader, Exception e);
+        void onDownloadError(String hash, Downloader downloader, Throwable e);
     }
 
 }

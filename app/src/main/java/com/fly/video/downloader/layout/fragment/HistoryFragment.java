@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fly.video.downloader.R;
+import com.fly.video.downloader.bean.Video;
+import com.fly.video.downloader.content.history.History;
 import com.fly.video.downloader.layout.listener.HistoryFragmentListener;
-import com.fly.video.downloader.util.content.history.History;
-import com.fly.video.downloader.util.model.Video;
 
 public class HistoryFragment extends Fragment {
 

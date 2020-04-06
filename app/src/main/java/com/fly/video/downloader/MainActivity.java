@@ -11,12 +11,14 @@ import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.fly.video.downloader.bean.Video;
+import com.fly.video.downloader.content.Recv;
 import com.fly.video.downloader.core.app.BaseActivity;
+import com.fly.video.downloader.core.content.ClipboardManager;
 import com.fly.video.downloader.layout.fragment.HistoryFragment;
 import com.fly.video.downloader.layout.fragment.VideoFragment;
 import com.fly.video.downloader.layout.fragment.VideoSearchFragment;
-import com.fly.video.downloader.util.content.Recv;
-import com.fly.video.downloader.util.model.Video;
+import com.fly.video.downloader.util.Helpers;
 import com.github.florent37.runtimepermission.RuntimePermission;
 import com.github.florent37.runtimepermission.callbacks.PermissionListener;
 
@@ -104,6 +106,27 @@ public class MainActivity extends BaseActivity {
                 Toast.makeText(MainActivity.this,"Why?", Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+    private String lastClip = "";
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ClipboardManager clip = new ClipboardManager(this);
+        String str = clip.getText(0);
+
+        if (!lastClip.equals(str))
+        {
+            if (Helpers.containsDouyin(this, str)) {
+                lastClip = str;
+                showVideoSearchFragment();
+                searchFragment.setText(str);
+                Toast.makeText(this, R.string.clip_valid, Toast.LENGTH_LONG).show();
+            }
+        }
 
     }
 

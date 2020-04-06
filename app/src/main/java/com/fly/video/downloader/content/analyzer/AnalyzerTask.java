@@ -1,15 +1,16 @@
-package com.fly.video.downloader.util.content.analyzer;
+package com.fly.video.downloader.content.analyzer;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
 import com.fly.video.downloader.R;
+import com.fly.video.downloader.bean.Video;
+import com.fly.video.downloader.content.analyzer.app.DouyinV3;
+import com.fly.video.downloader.contract.VideoParser;
 import com.fly.video.downloader.core.exception.URLInvalidException;
 import com.fly.video.downloader.core.os.AsyncTaskResult;
-import com.fly.video.downloader.util.content.analyzer.app.DouyinV2;
-import com.fly.video.downloader.util.contract.VideoParser;
-import com.fly.video.downloader.util.exception.VideoException;
-import com.fly.video.downloader.util.model.Video;
+import com.fly.video.downloader.exception.VideoException;
+import com.fly.video.downloader.util.Helpers;
 
 public class AnalyzerTask extends AsyncTask<String, Integer, AsyncTaskResult<Video>>  {
 
@@ -27,13 +28,14 @@ public class AnalyzerTask extends AsyncTask<String, Integer, AsyncTaskResult<Vid
         String str = params[0];
         VideoParser parser = null;
 
-        if (str.matches(this.context.getString(R.string.url_douyin_regex))) {
-            parser = DouyinV2.getInstance(this.context);
+        if (Helpers.containsDouyin(context, str)) {
+            parser = DouyinV3.getInstance(this.context);
         }
 
         try {
             if (parser == null)
                 throw new URLInvalidException(this.context.getString(R.string.exception_invalid_url));
+
             Video video = parser.get(str);
 
             if (video == null || video.isEmpty())
@@ -41,10 +43,16 @@ public class AnalyzerTask extends AsyncTask<String, Integer, AsyncTaskResult<Vid
 
             return new AsyncTaskResult<>(video);
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return new AsyncTaskResult<>(e);
         }
 
+    }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+        context = null;
     }
 
     @Override
@@ -58,11 +66,13 @@ public class AnalyzerTask extends AsyncTask<String, Integer, AsyncTaskResult<Vid
         else
             listener.onAnalyzed(result.getResult());
 
+        context = null;
+
     }
 
     public interface AnalyzeListener {
         void onAnalyzed(Video video);
         void onAnalyzeCanceled();
-        void onAnalyzeError(Exception e);
+        void onAnalyzeError(Throwable e);
     }
 }

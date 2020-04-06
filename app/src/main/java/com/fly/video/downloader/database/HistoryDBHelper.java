@@ -1,4 +1,4 @@
-package com.fly.video.downloader.util.database;
+package com.fly.video.downloader.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

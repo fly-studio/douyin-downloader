@@ -1,8 +1,9 @@
-package com.fly.video.downloader.util.model;
+package com.fly.video.downloader.bean;
 
-import com.fly.video.downloader.core.contract.AbstractJsonable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fly.video.downloader.core.contract.Jsonable;
 
-abstract public class Video extends AbstractJsonable {
+abstract public class Video extends Jsonable {
 
     protected String id = null;
     protected String title = null;
@@ -21,6 +22,7 @@ abstract public class Video extends AbstractJsonable {
         this.user = user;
     }
 
+    @JsonIgnore
     public boolean isEmpty()
     {
         return this.id == null || this.id.isEmpty();

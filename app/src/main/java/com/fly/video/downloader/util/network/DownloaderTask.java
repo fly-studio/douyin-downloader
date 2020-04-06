@@ -3,6 +3,7 @@ package com.fly.video.downloader.util.network;
 import android.os.AsyncTask;
 
 import com.fly.video.downloader.core.os.AsyncTaskResult;
+import com.fly.video.downloader.util.Helpers;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -45,7 +46,7 @@ public class DownloaderTask extends AsyncTask<Void, Long, AsyncTaskResult<Downlo
             Request request = new Request.Builder()
                     .url(downloader.getUrl())
                     .removeHeader("User-Agent")
-                    .addHeader("User-Agent", "okhttp/1.0.0")
+                    .addHeader("User-Agent",  Helpers.getPhoneUa())
                     .build();
             Response response = client.newCall(request).execute();
             ResponseBody body = response.body();

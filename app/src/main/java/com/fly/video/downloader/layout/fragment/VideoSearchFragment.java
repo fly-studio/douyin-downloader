@@ -17,6 +17,8 @@ import com.fly.video.downloader.R;
 import com.fly.video.downloader.core.Validator;
 import com.fly.video.downloader.core.content.ClipboardManager;
 
+import org.apache.commons.lang3.StringUtils;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -30,6 +32,7 @@ import butterknife.Unbinder;
 public class VideoSearchFragment extends Fragment {
     @BindView(R.id.video_search_editor)
     protected EditText editor;
+    protected String editorText;
 
     private Unbinder unbinder;
 
@@ -56,7 +59,7 @@ public class VideoSearchFragment extends Fragment {
                 ClipboardManager clip = new ClipboardManager(getActivity());
 
                 String str = clip.getText(0);
-                if (str == null || str.isEmpty())
+                if (StringUtils.isEmpty(str))
                 {
                     Toast.makeText(getActivity(), R.string.empty_clipboard, Toast.LENGTH_SHORT).show();
                 } else {
@@ -129,4 +132,17 @@ public class VideoSearchFragment extends Fragment {
 
     }
 
+    public void setText(String str) {
+        editorText = str;
+        if (null != editor)
+            editor.setText(str);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!StringUtils.isEmpty(editorText))
+            editor.setText(editorText);
+    }
 }

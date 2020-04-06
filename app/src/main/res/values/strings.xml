@@ -15,12 +15,14 @@
 
     <!--网址-->
     <string name="url_douyin_regex">(?s).*?(www\.iesdouyin\.com|v\.douyin\.com).*?</string>
+    <string name="clip_valid">检测到剪贴板中有抖音网址，自动跳转到搜索页面</string>
 
 
     <!--异常-->
     <string name="exception_invalid_video">无法获取到有效的视频</string>
     <string name="exception_douyin_url">不是一个抖音视频播放的网址</string>
-    <string name="exception_invalid_url">没有匹配到有效网址，比如：https://v.douyin.com/...</string>
+    <string name="exception_invalid_url">没有匹配到有效网址，比如：https://v.douyin.com/…</string>
     <string name="exception_http">无法访问该URL，或无法获取到有效内容</string>
+    <string name="exception_json">无法解析</string>
 
 </resources>

@@ -1,12 +1,12 @@
-package com.fly.video.downloader.util.content.history;
+package com.fly.video.downloader.content.history;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.fly.video.downloader.App;
-import com.fly.video.downloader.util.database.HistoryDBHelper;
-import com.fly.video.downloader.util.model.Video;
+import com.fly.video.downloader.bean.Video;
+import com.fly.video.downloader.database.HistoryDBHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,7 +60,7 @@ public class History {
 
             return (T)Video.fromJson(clazz, json);
         } catch (Exception e){
-
+            e.printStackTrace();
         }
         return null;
     }

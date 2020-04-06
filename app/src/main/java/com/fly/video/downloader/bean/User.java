@@ -1,11 +1,9 @@
-package com.fly.video.downloader.util.model;
+package com.fly.video.downloader.bean;
 
 public class User {
     protected String id = null;
     protected String nickname = null;
     protected String avatarUrl = null;
-    protected String avatarThumbUrl = null;
-    protected String signature = null;
 
     public String getId() {
         return id;
@@ -31,19 +29,4 @@ public class User {
         this.avatarUrl = avatarUrl;
     }
 
-    public String getAvatarThumbUrl() {
-        return avatarThumbUrl;
-    }
-
-    public void setAvatarThumbUrl(String avatarThumbUrl) {
-        this.avatarThumbUrl = avatarThumbUrl;
-    }
-
-    public String getSignature() {
-        return signature;
-    }
-
-    public void setSignature(String signature) {
-        this.signature = signature;
-    }
 }

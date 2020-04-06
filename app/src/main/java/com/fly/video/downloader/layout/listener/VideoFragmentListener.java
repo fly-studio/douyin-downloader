@@ -18,11 +18,11 @@ import com.fly.iconify.widget.IconTextView;
 import com.fly.video.downloader.GlideApp;
 import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;
+import com.fly.video.downloader.bean.Video;
+import com.fly.video.downloader.content.analyzer.AnalyzerTask;
 import com.fly.video.downloader.core.io.Storage;
 import com.fly.video.downloader.core.listener.FragmentListener;
-import com.fly.video.downloader.util.content.analyzer.AnalyzerTask;
 import com.fly.video.downloader.util.io.FileStorage;
-import com.fly.video.downloader.util.model.Video;
 import com.fly.video.downloader.util.network.DownloadQueue;
 import com.fly.video.downloader.util.network.Downloader;
 
@@ -134,7 +134,7 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
             textDownloaded.setVisibility(View.INVISIBLE);
 
             GlideApp.with(fragment)
-                    .load(video.getUser().getAvatarThumbUrl())
+                    .load(video.getUser().getAvatarUrl())
                     .placeholder(R.mipmap.ic_launcher)
                     .error(R.drawable.ic_notifications_black_24dp)
                     .skipMemoryCache(true)
@@ -202,12 +202,12 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
     }
 
     @Override
-    public void onDownloadError(String hash, Downloader downloader, Exception e) {
+    public void onDownloadError(String hash, Downloader downloader, Throwable e) {
 
     }
 
     @Override
-    public void onAnalyzeError(Exception e) {
+    public void onAnalyzeError(Throwable e) {
         Toast.makeText(this.context, e.getMessage(), Toast.LENGTH_LONG).show();
     }
 

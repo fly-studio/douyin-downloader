@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.fly.video.downloader.core.io.Storage;
 import com.fly.video.downloader.core.security.Encrypt;
-import com.fly.video.downloader.util.exception.DownloadFileException;
+import com.fly.video.downloader.exception.DownloadFileException;
 import com.fly.video.downloader.util.io.FileStorage;
 
 public class Downloader {
@@ -158,7 +158,7 @@ public class Downloader {
         loaded = total;
     }
 
-    protected void error(Exception e)
+    protected void error(Throwable e)
     {
         status = STATUS.ERROR;
         loaded = total = 0;
@@ -186,7 +186,7 @@ public class Downloader {
             this.listener.onDownloadCanceled(this);
     }
 
-    public void onDownloadError(Exception e) {
+    public void onDownloadError(Throwable e) {
         error(e);
 
         if (this.listener != null)
@@ -205,6 +205,6 @@ public class Downloader {
         void onDownloaded(Downloader downloader);
         void onDownloadProgress(Downloader downloader, long loaded, long total);
         void onDownloadCanceled(Downloader downloader);
-        void onDownloadError(Downloader downloader, Exception e);
+        void onDownloadError(Downloader downloader, Throwable e);
     }
 }

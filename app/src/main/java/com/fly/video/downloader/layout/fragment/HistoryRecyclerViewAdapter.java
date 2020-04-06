@@ -14,9 +14,9 @@ import android.widget.Toast;
 
 import com.fly.video.downloader.GlideApp;
 import com.fly.video.downloader.R;
+import com.fly.video.downloader.bean.Video;
+import com.fly.video.downloader.content.history.HistoryReadTask;
 import com.fly.video.downloader.layout.listener.HistoryFragmentListener;
-import com.fly.video.downloader.util.content.history.HistoryReadTask;
-import com.fly.video.downloader.util.model.Video;
 
 import java.util.ArrayList;
 
@@ -70,7 +70,7 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         @Override
-        public void onError(Exception e) {
+        public void onError(Throwable e) {
             readTask = null;
 
         }
@@ -128,7 +128,7 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         {
 
         } else {
-            if (position < videos.size() - 1)
+            if (position <= videos.size() - 1)
             {
                 final ViewHolder viewHolder = (ViewHolder) holder;
                 Video video = videos.get(position);
@@ -239,7 +239,7 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             mTitle.setText(video.getTitle());
             mNickname.setText(video.getUser().getNickname());
             GlideApp.with(mView)
-                    .load(video.getUser().getAvatarThumbUrl())
+                    .load(video.getUser().getAvatarUrl())
                     .placeholder(R.mipmap.ic_launcher)
                     .error(R.drawable.ic_notifications_black_24dp)
                     .skipMemoryCache(true)

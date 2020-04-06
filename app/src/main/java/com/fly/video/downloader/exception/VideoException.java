@@ -1,4 +1,4 @@
-package com.fly.video.downloader.util.exception;
+package com.fly.video.downloader.exception;
 
 import android.annotation.SuppressLint;
 

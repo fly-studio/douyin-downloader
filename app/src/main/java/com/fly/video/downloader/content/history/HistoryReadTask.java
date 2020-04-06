@@ -1,10 +1,10 @@
-package com.fly.video.downloader.util.content.history;
+package com.fly.video.downloader.content.history;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.fly.video.downloader.bean.Video;
 import com.fly.video.downloader.core.os.AsyncTaskResult;
-import com.fly.video.downloader.util.model.Video;
 
 import java.util.ArrayList;
 
@@ -36,7 +36,7 @@ public class HistoryReadTask extends AsyncTask<Integer, Integer, AsyncTaskResult
         int size = integers[1];
         try {
             return new AsyncTaskResult(History.get(page, size));
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return new AsyncTaskResult(e);
         }
     }
@@ -44,6 +44,6 @@ public class HistoryReadTask extends AsyncTask<Integer, Integer, AsyncTaskResult
     public interface HistoryListener {
         void onGot(ArrayList<Video> videos);
         void onCanceled();
-        void onError(Exception e);
+        void onError(Throwable e);
     }
 }
