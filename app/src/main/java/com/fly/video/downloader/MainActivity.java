@@ -114,20 +114,24 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        //Android Q以上 必须要在view渲染完毕之后获得剪贴板内容
+        getWindow().getDecorView().post(new Runnable() {
+            @Override
+            public void run() {
+                ClipboardManager clip = new ClipboardManager(MainActivity.this);
+                String str = clip.getText(0);
 
-        ClipboardManager clip = new ClipboardManager(this);
-        String str = clip.getText(0);
-
-        if (!lastClip.equals(str))
-        {
-            if (Helpers.containsDouyin(this, str)) {
-                lastClip = str;
-                showVideoSearchFragment();
-                searchFragment.setText(str);
-                Toast.makeText(this, R.string.clip_valid, Toast.LENGTH_LONG).show();
+                if (!lastClip.equals(str))
+                {
+                    if (Helpers.containsDouyin(MainActivity.this, str)) {
+                        lastClip = str;
+                        showVideoSearchFragment();
+                        searchFragment.setText(str);
+                        Toast.makeText(MainActivity.this, R.string.clip_valid, Toast.LENGTH_LONG).show();
+                    }
+                }
             }
-        }
-
+        });
     }
 
     @Override
