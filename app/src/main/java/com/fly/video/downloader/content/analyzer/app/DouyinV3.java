@@ -1,6 +1,8 @@
 package com.fly.video.downloader.content.analyzer.app;
 
+import android.app.Activity;
 import android.content.Context;
+import android.widget.Toast;
 
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.bean.app.DouyinUser;
@@ -53,36 +55,53 @@ public class DouyinV3 extends VideoParser {
 
     private DouyinVideo parseVideo(String html) throws Throwable {
         JSONObject json = getJson(html);
+        Document dom = Jsoup.parse(html);
+
         String jsonStr = httpGet("https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=" + json.getString("itemId") + "&dytk=" + json.getString("dytk"));
-
         Record record = Jsonable.fromJson(Record.class, jsonStr);
-        if (record.isEmpty())
-            throw new VideoException(this.getString(R.string.exception_json));
-
-        Record.Item item = record.getItem();
 
         DouyinVideo video = new DouyinVideo();
-        video.setAweme_id(Long.parseLong(item.aweme_id));
-        video.setId(item.video.vid);
-        video.setUrl(item.video.play_addr.getUrl());
-        video.setCoverUrl(item.video.cover.getUrl());
-        video.setDynamicCoverUrl(item.video.dynamic_cover.getUrl());
-        video.setTitle(item.desc);
-        video.setContent(item.desc);
-        video.setWidth(item.video.width);
-        video.setHeight(item.video.height);
-        video.setUser(parseUser(html));
+
+        if (record.isEmpty()) {
+            video.setAweme_id(json.getLong("itemId"));
+            video.setId(String.valueOf(video.getAweme_id()));
+            video.setUrl(dom.select("#theVideo").attr("src"));
+            video.setCoverUrl(dom.select("input[name=\"shareImage\"]").attr("value"));
+            video.setTitle(dom.select("input[name=\"shareDesc\"]").attr("value"));
+            video.setContent(video.getTitle());
+            video.setWidth(json.getInt("videoWidth"));
+            video.setHeight(json.getInt("videoHeight"));
+            ((Activity)context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, R.string.maybe_watermark, Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            Record.Item item = record.getItem();
+
+            video.setAweme_id(Long.parseLong(item.aweme_id));
+            video.setId(item.video.vid);
+            video.setUrl(item.video.play_addr.getUrl());
+            video.setCoverUrl(item.video.cover.getUrl());
+            video.setDynamicCoverUrl(item.video.dynamic_cover.getUrl());
+            video.setTitle(item.desc);
+            video.setContent(video.getTitle());
+            video.setWidth(item.video.width);
+            video.setHeight(item.video.height);
+        }
+
+        video.setUser(parseUser(json, dom));
 
         return video;
     };
 
-    private DouyinUser parseUser(String html) {
-        Document dom = Jsoup.parse(html);
+    private DouyinUser parseUser(JSONObject json, Document dom) throws JSONException {
 
         DouyinUser user = new DouyinUser();
-        user.setNickname(dom.select("#videoUser > .user-info > .user-info-name").text());
+        user.setNickname(json.has("authorName") ? json.getString("authorName") : dom.select("#videoUser > .user-info > .user-info-name").text());
         user.setAvatarUrl(dom.select("#videoInfo > .info-right > .info-avator > .img-avator").attr("src"));
-
+        user.setId(json.getString("uid"));
         return user;
     }
 
@@ -90,7 +109,7 @@ public class DouyinV3 extends VideoParser {
         Pattern pattern = Pattern.compile("\\.init\\(\\{(.*?)\\}\\);", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(html);
         if (matcher.find()) {
-            String jsonStr = "{" + matcher.group(1) + "}".replaceAll("[\\s]+([\\w\\d_]*?):", "\"\\1\":");
+            String jsonStr = ("{" + matcher.group(1) + "}").replaceAll("[\\s]*([a-zA-Z0-9_]*?):", "\"$1\":");
             return new JSONObject(jsonStr);
         } else {
             throw new VideoException(this.getString(R.string.exception_douyin_url));
