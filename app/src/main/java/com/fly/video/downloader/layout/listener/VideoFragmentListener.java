@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fly.iconify.widget.IconTextView;
+
 import com.fly.video.downloader.GlideApp;
 import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;

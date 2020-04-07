@@ -7,6 +7,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -22,6 +23,8 @@ import com.fly.video.downloader.util.Helpers;
 import com.github.florent37.runtimepermission.RuntimePermission;
 import com.github.florent37.runtimepermission.callbacks.PermissionListener;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Date;
 import java.util.List;
 
@@ -32,12 +35,13 @@ import butterknife.Unbinder;
 import static com.github.florent37.runtimepermission.RuntimePermission.askPermission;
 
 public class MainActivity extends BaseActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.navigation)
-    BottomNavigationView bottomNavigationView;
+    protected BottomNavigationView bottomNavigationView;
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    protected Toolbar toolbar;
     @BindView(R.id.progress)
-    ProgressBar progressBar;
+    protected ProgressBar progressBar;
 
 
     private Unbinder unbinder;
@@ -98,12 +102,13 @@ public class MainActivity extends BaseActivity {
         askPermission(this).ask(new PermissionListener() {
             @Override
             public void onAccepted(RuntimePermission runtimePermission, List<String> accepted) {
-                Toast.makeText(MainActivity.this,"OK", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Accepted Permissions: " + StringUtils.join(accepted, ", "));
+                //Toast.makeText(MainActivity.this,"OK", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onDenied(RuntimePermission runtimePermission, List<String> denied, List<String> foreverDenied) {
-                Toast.makeText(MainActivity.this,"Why?", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"以下权限没有授权：" + StringUtils.join(denied, ", ") , Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -50,12 +50,15 @@ public class DouyinV3 extends VideoParser {
         if (!html.contains("douyin_falcon:page"))
             throw new VideoException(this.getString(R.string.exception_douyin_url));
 
+        if (!html.contains("<video"))
+            throw new VideoException(this.getString(R.string.exception_invalid_video));
+
         return parseVideo(html);
     }
 
     private DouyinVideo parseVideo(String html) throws Throwable {
-        JSONObject json = getJson(html);
         Document dom = Jsoup.parse(html);
+        JSONObject json = getJson(html);
 
         String jsonStr = httpGet("https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=" + json.getString("itemId") + "&dytk=" + json.getString("dytk"));
         Record record = Jsonable.fromJson(Record.class, jsonStr);

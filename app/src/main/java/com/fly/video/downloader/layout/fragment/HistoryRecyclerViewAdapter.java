@@ -5,12 +5,13 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.fly.video.downloader.GlideApp;
 import com.fly.video.downloader.R;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 
 
 public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = HistoryRecyclerViewAdapter.class.getSimpleName();
 
     private static final int TYPE_NORMAL = 1;
     private static final int TYPE_REFRESH = 2;
@@ -55,7 +57,8 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 videos.addAll(_videos);
                 notifyItemRangeInserted(offset, _videos.size());
                 notifyItemChanged(offset);
-                Toast.makeText(context, String.valueOf(page), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "History page: " + page);
+                //Toast.makeText(context, String.valueOf(page), Toast.LENGTH_SHORT).show();
                 //notifyItemRangeChanged(offset, _videos.size() + 1);
                 //notifyDataSetChanged();
             }
