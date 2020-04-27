@@ -50,9 +50,6 @@ public class DouyinV3 extends VideoParser {
         if (!html.contains("douyin_falcon:page"))
             throw new VideoException(this.getString(R.string.exception_douyin_url));
 
-        if (!html.contains("<video"))
-            throw new VideoException(this.getString(R.string.exception_invalid_video));
-
         return parseVideo(html);
     }
 
@@ -85,7 +82,7 @@ public class DouyinV3 extends VideoParser {
 
             video.setAweme_id(Long.parseLong(item.aweme_id));
             video.setId(item.video.vid);
-            video.setUrl(item.video.play_addr.getUrl());
+            //video.setUrl(item.video.play_addr.getUrl());
             video.setCoverUrl(item.video.cover.getUrl());
             video.setDynamicCoverUrl(item.video.dynamic_cover.getUrl());
             video.setTitle(item.desc);
