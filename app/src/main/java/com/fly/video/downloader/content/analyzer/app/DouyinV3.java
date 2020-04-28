@@ -14,6 +14,7 @@ import com.fly.video.downloader.core.exception.URLInvalidException;
 import com.fly.video.downloader.exception.VideoException;
 import com.fly.video.downloader.util.Helpers;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -63,9 +64,14 @@ public class DouyinV3 extends VideoParser {
         DouyinVideo video = new DouyinVideo();
 
         if (record.isEmpty()) {
+            String url = dom.select("#theVideo").attr("src");
+
+            if (StringUtils.isEmpty(url))
+                throw new VideoException(this.getString(R.string.exception_html));
+
             video.setAweme_id(json.getLong("itemId"));
             video.setId(String.valueOf(video.getAweme_id()));
-            video.setUrl(dom.select("#theVideo").attr("src"));
+            video.setUrl(url);
             video.setCoverUrl(dom.select("input[name=\"shareImage\"]").attr("value"));
             video.setTitle(dom.select("input[name=\"shareDesc\"]").attr("value"));
             video.setContent(video.getTitle());
@@ -77,6 +83,14 @@ public class DouyinV3 extends VideoParser {
                     Toast.makeText(context, R.string.maybe_watermark, Toast.LENGTH_LONG).show();
                 }
             });
+
+            DouyinUser user = new DouyinUser();
+            user.setNickname(json.has("authorName") ? json.getString("authorName") : dom.select("#videoUser > .user-info > .user-info-name").text());
+            user.setAvatarUrl(dom.select("#videoUser > .img-avator").attr("src"));
+            user.setId(json.getString("uid"));
+
+            video.setUser(user);
+
         } else {
             Record.Item item = record.getItem();
 
@@ -89,20 +103,16 @@ public class DouyinV3 extends VideoParser {
             video.setContent(video.getTitle());
             video.setWidth(item.video.width);
             video.setHeight(item.video.height);
+
+            DouyinUser user = new DouyinUser();
+            user.setNickname(item.author.nickname);
+            user.setAvatarUrl(item.author.avatar_thumb.getUrl());
+            user.setId(item.author.uid);
+
+            video.setUser(user);
         }
 
-        video.setUser(parseUser(json, dom));
-
         return video;
-    };
-
-    private DouyinUser parseUser(JSONObject json, Document dom) throws JSONException {
-
-        DouyinUser user = new DouyinUser();
-        user.setNickname(json.has("authorName") ? json.getString("authorName") : dom.select("#videoUser > .user-info > .user-info-name").text());
-        user.setAvatarUrl(dom.select("#videoInfo > .info-right > .info-avator > .img-avator").attr("src"));
-        user.setId(json.getString("uid"));
-        return user;
     }
 
     private JSONObject getJson(String html) throws JSONException {
@@ -132,6 +142,7 @@ public class DouyinV3 extends VideoParser {
         public static class Item {
             public String aweme_id;
             public Video video;
+            public User author;
             public String desc;
 
             public static class Video {
@@ -145,14 +156,24 @@ public class DouyinV3 extends VideoParser {
                 public int height;
                 public String vid;
 
-                public  static class Addr {
-                    public String uri;
-                    public List<String> url_list;
+            }
 
-                    public String getUrl() {
-                        return url_list != null && !url_list.isEmpty() ? url_list.get(0) : null;
-                    }
+            public static class Addr {
+                public String uri;
+                public List<String> url_list;
+
+                public String getUrl() {
+                    return url_list != null && !url_list.isEmpty() ? url_list.get(0) : null;
                 }
+            }
+
+            public static class User {
+                public String uid;
+                public String nickname;
+                public Addr avatar_larger;
+                public Addr avatar_thumb;
+                public Addr avatar_medium;
+
             }
         }
     }
