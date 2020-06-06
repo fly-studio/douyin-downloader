@@ -9,11 +9,15 @@ import com.fly.video.downloader.core.contract.AbstractSingleton;
 import com.fly.video.downloader.core.exception.HttpException;
 import com.fly.video.downloader.util.Helpers;
 
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.io.IOException;
 import java.util.Objects;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 
 abstract public class VideoParser extends AbstractSingleton {
     private static final String TAG = VideoParser.class.getSimpleName();
@@ -35,7 +39,7 @@ abstract public class VideoParser extends AbstractSingleton {
         return this.context.getString(resID, formatArgs);
     }
 
-    protected String httpGet(String url)
+    protected Pair<String, String> httpGet(String url)
     {
         try {
             Request request = new Request.Builder()
@@ -43,12 +47,15 @@ abstract public class VideoParser extends AbstractSingleton {
                     .url(url)
                     .build();
 
-            String html = Objects.requireNonNull(new OkHttpClient().newCall(request).execute().body()).string();
+            Response response = new OkHttpClient().newCall(request).execute();
+            String finalUrl = response.request().url().toString();
+
+            String html = Objects.requireNonNull(response.body()).string();
 
             if (html.isEmpty())
                 throw new HttpException(this.getString(R.string.exception_http));
 
-            return html;
+            return new MutablePair<>(finalUrl, html);
         } catch (IOException | NullPointerException e)
         {
             Log.e(TAG, e.getMessage(), e);

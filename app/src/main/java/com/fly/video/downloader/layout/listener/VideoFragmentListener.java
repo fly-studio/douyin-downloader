@@ -72,7 +72,7 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
         textDownloaded.setVisibility(View.INVISIBLE);
         iconVideoPause.setVisibility(View.INVISIBLE);
 
-        playerListener = new PlayerListener(context, textureView);
+        playerListener = new PlayerListener(context, fragment, textureView);
         playerListener.setPlayerChangeListener(mPlayerChangeListener);
     }
 

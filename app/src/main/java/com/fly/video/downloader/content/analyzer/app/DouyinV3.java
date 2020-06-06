@@ -15,6 +15,7 @@ import com.fly.video.downloader.exception.VideoException;
 import com.fly.video.downloader.util.Helpers;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -46,25 +47,29 @@ public class DouyinV3 extends VideoParser {
         if (url == null)
             throw new URLInvalidException(this.getString(R.string.exception_invalid_url));
 
-        String html = httpGet(url);
+        Pair<String, String> response = httpGet(url);
 
-        if (!html.contains("douyin_falcon:page"))
+        if (!response.getValue().contains("douyin_falcon:page"))
             throw new VideoException(this.getString(R.string.exception_douyin_url));
 
-        return parseVideo(html);
+        return parseVideo(response.getKey(), response.getValue());
     }
 
-    private DouyinVideo parseVideo(String html) throws Throwable {
+    private DouyinVideo parseVideo(String url, String html) throws Throwable {
         Document dom = Jsoup.parse(html);
         JSONObject json = getJson(html);
 
-        String jsonStr = httpGet("https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=" + json.getString("itemId") + "&dytk=" + json.getString("dytk"));
+        String itemId = json.getString("itemId");
+        itemId = StringUtils.isEmpty(itemId) || itemId.equals("0") ? parseItemIdFromUrl(url) : json.getString("itemId");
+
+        Pair<String, String> response = httpGet("https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=" + itemId + "&dytk=" + json.getString("dytk"));
+        String jsonStr = response.getValue();
         Record record = Jsonable.fromJson(Record.class, jsonStr);
 
         DouyinVideo video = new DouyinVideo();
 
         if (record.isEmpty()) {
-            String url = dom.select("#theVideo").attr("src");
+            url = dom.select("#theVideo").attr("src");
 
             if (StringUtils.isEmpty(url))
                 throw new VideoException(this.getString(R.string.exception_html));
@@ -113,6 +118,19 @@ public class DouyinV3 extends VideoParser {
         }
 
         return video;
+    }
+
+    private String parseItemIdFromUrl(String url)
+    {
+        if (url.contains("www.iesdouyin.com")) {
+            Pattern pattern =  Pattern.compile("/video/([\\d\\w]+?)/", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+            Matcher matcher = pattern.matcher(url);
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
+        }
+
+        return null;
     }
 
     private JSONObject getJson(String html) throws JSONException {

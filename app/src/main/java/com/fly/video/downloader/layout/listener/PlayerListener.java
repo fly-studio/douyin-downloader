@@ -1,6 +1,7 @@
 package com.fly.video.downloader.layout.listener;
 
 import android.app.Activity;
+import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.SurfaceTexture;
@@ -8,6 +9,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.constraint.solver.widgets.Rectangle;
+import android.support.v4.app.Fragment;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -27,14 +29,16 @@ public class PlayerListener extends ActivityListener {
         STOP,
     }
 
+    private Fragment fragment;
     protected TextureView textureView;
     private Surface surface;
     private MediaPlayer player;
     private STATUS status = STATUS.NONE;
     private IPlayerChangeListener iPlayerChangeListener;
 
-    public PlayerListener(Context context, TextureView textureView) {
+    public PlayerListener(Context context, Fragment fragment, TextureView textureView) {
         super(context);
+        this.fragment = fragment;
         this.textureView = textureView;
 
         textureView.setClickable(true);
@@ -246,6 +250,10 @@ public class PlayerListener extends ActivityListener {
 
     public synchronized void playVideo()
     {
+        // 如果此时activity已经暂停，则不播放
+        if (!fragment.getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED))
+            return;
+
         if (player != null && status != STATUS.NONE)
         {
             player.start();
