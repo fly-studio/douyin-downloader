@@ -49,9 +49,6 @@ public class DouyinV3 extends VideoParser {
 
         Pair<String, String> response = httpGet(url);
 
-        if (!response.getValue().contains("douyin_falcon:page"))
-            throw new VideoException(this.getString(R.string.exception_douyin_url));
-
         return parseVideo(response.getKey(), response.getValue());
     }
 
@@ -59,10 +56,18 @@ public class DouyinV3 extends VideoParser {
         Document dom = Jsoup.parse(html);
         JSONObject json = getJson(html);
 
-        String itemId = json.getString("itemId");
-        itemId = StringUtils.isEmpty(itemId) || itemId.equals("0") ? parseItemIdFromUrl(url) : json.getString("itemId");
+        String itemId = "", dytk = "";
 
-        Pair<String, String> response = httpGet("https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=" + itemId + "&dytk=" + json.getString("dytk"));
+        if (json != null) {
+            itemId = json.getString("itemId");
+            dytk = json.getString("dytk");
+        }
+
+        itemId = StringUtils.isEmpty(itemId) || itemId.equals("0") ? parseItemIdFromUrl(url) : itemId;
+
+        String api_url = "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=" + itemId + "&dytk=" + dytk;
+
+        Pair<String, String> response = httpGet(api_url);
         String jsonStr = response.getValue();
         Record record = Jsonable.fromJson(Record.class, jsonStr);
 
@@ -140,7 +145,7 @@ public class DouyinV3 extends VideoParser {
             String jsonStr = ("{" + matcher.group(1) + "}").replaceAll("[\\s]*([a-zA-Z0-9_]*?):", "\"$1\":");
             return new JSONObject(jsonStr);
         } else {
-            throw new VideoException(this.getString(R.string.exception_douyin_url));
+            return null;
         }
     }
 
