@@ -49,8 +49,12 @@ abstract public class VideoParser extends AbstractSingleton {
 
             Response response = new OkHttpClient().newCall(request).execute();
             String finalUrl = response.request().url().toString();
+            String html = "";
 
-            String html = Objects.requireNonNull(response.body()).string();
+            if (response.body() != null) {
+                html = response.body().string();
+                response.body().close();
+            }
 
             if (html.isEmpty())
                 throw new HttpException(this.getString(R.string.exception_http));
@@ -62,6 +66,25 @@ abstract public class VideoParser extends AbstractSingleton {
         }
 
         throw new HttpException(this.getString(R.string.exception_http));
+    }
+
+    protected String redirectUrl(String url, boolean usePhoneUa) {
+        try {
+            Request request = new Request.Builder()
+                    .header("User-Agent", usePhoneUa ? Helpers.getPhoneUa() : Helpers.getPcUa())
+                    .url(url)
+                    .build();
+
+            Response response = new OkHttpClient().newCall(request).execute();
+            if (response.body() != null) {
+               response.body().close();
+            }
+            return response.request().url().toString();
+        } catch (IOException | NullPointerException e)
+        {
+            Log.e(TAG, e.getMessage(), e);
+        }
+        return url;
     }
 
     abstract public Video get(String str) throws Throwable;

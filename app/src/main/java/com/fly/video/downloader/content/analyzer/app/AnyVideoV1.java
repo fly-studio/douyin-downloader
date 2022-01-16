@@ -34,20 +34,25 @@ public class AnyVideoV1 extends VideoParser {
 
     @Override
     public AnyVideo get(String str) throws Throwable {
-        String url = Helpers.stripUrl(str);
-        if (url == null)
+        String originalUrl = Helpers.stripUrl(str);
+        if (originalUrl == null)
             throw new URLInvalidException(this.getString(R.string.exception_invalid_url));
+
+        String url = originalUrl;
+        if (originalUrl.contains("v.ixigua.com")) {
+             url = redirectUrl(originalUrl, false);
+        }
 
         Pair<String, String> response = httpGet("https://tenapi.cn/video/?url=" + URLEncoder.encode(url, "utf-8"), false);
 
-        return parseVideo(url, response.getValue());
+        return parseVideo(originalUrl, response.getValue());
     }
 
     private AnyVideo parseVideo(String url, String html) throws Throwable {
 
         record record = Jsonable.fromJson(record.class, html);
 
-        if (record.code != 200) {
+        if (record.code != 200 || record.url == null || record.url.isEmpty()) {
             throw new VideoException(record.msg);
         }
         AnyVideo video = new AnyVideo();
