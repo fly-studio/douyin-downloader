@@ -5,14 +5,16 @@ import com.fly.video.downloader.core.contract.Jsonable;
 
 abstract public class Video extends Jsonable {
 
-    protected String id = null;
-    protected String title = null;
-    protected String content = null;
-    protected String coverUrl = null;
-    protected String url = null;
+    protected String id = "";
+    protected String title = "";
+    protected String content = "";
+    protected String coverUrl = "";
+    protected String url = "";
     protected int width = 0;
     protected int height = 0;
     protected User user = null;
+
+    protected String originalUrl = "";
 
     public User getUser() {
         return user;
@@ -84,4 +86,11 @@ abstract public class Video extends Jsonable {
         this.height = height;
     }
 
+    public void setOriginalUrl(String url) {
+        this.originalUrl = url;
+    }
+
+    public String getOriginalUrl() {
+        return originalUrl;
+    }
 }

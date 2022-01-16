@@ -240,15 +240,18 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         {
             this.video = video;
             mTitle.setText(video.getTitle());
-            mNickname.setText(video.getUser().getNickname());
-            GlideApp.with(mView)
-                    .load(video.getUser().getAvatarUrl())
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.drawable.ic_notifications_black_24dp)
-                    .skipMemoryCache(true)
-                    .circleCrop()
-                    .into(mAvatar);
-
+            mNickname.setText(video.getUser().getNickname().isEmpty() ? "未知" : video.getUser().getNickname());
+            if (!video.getUser().getAvatarUrl().isEmpty()) {
+                GlideApp.with(mView)
+                        .load(video.getUser().getAvatarUrl())
+                        .placeholder(R.mipmap.ic_launcher)
+                        .error(R.drawable.ic_notifications_black_24dp)
+                        .skipMemoryCache(true)
+                        .circleCrop()
+                        .into(mAvatar);
+            } else {
+                mAvatar.setImageResource(R.drawable.ic_launcher_foreground);
+            }
         }
 
         public ViewHolder(View view) {

@@ -18,12 +18,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme.Dark">
+        android:requestLegacyExternalStorage="true"
+        android:theme="@style/AppTheme.Dark"
+        tools:targetApi="p">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
-            >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -34,7 +36,8 @@
             android:name=".ShareActivity"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/share_recv_name"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".MainActivity"
+            android:exported="false">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.SEND" />

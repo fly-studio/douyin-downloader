@@ -1,11 +1,12 @@
 package com.fly.video.downloader.content.analyzer;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.bean.Video;
-import com.fly.video.downloader.content.analyzer.app.DouyinV3;
+import com.fly.video.downloader.content.analyzer.app.AnyVideoV1;
 import com.fly.video.downloader.contract.VideoParser;
 import com.fly.video.downloader.core.exception.URLInvalidException;
 import com.fly.video.downloader.core.os.AsyncTaskResult;
@@ -14,6 +15,7 @@ import com.fly.video.downloader.util.Helpers;
 
 public class AnalyzerTask extends AsyncTask<String, Integer, AsyncTaskResult<Video>>  {
 
+    @SuppressLint("StaticFieldLeak")
     private Context context;
     private AnalyzeListener listener;
 
@@ -28,8 +30,8 @@ public class AnalyzerTask extends AsyncTask<String, Integer, AsyncTaskResult<Vid
         String str = params[0];
         VideoParser parser = null;
 
-        if (Helpers.containsDouyin(context, str)) {
-            parser = DouyinV3.getInstance(this.context);
+        if (Helpers.containsVideoUrl(context, str)) {
+            parser = AnyVideoV1.getInstance(this.context);
         }
 
         try {

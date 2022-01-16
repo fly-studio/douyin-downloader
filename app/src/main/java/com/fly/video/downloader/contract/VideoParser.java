@@ -39,11 +39,11 @@ abstract public class VideoParser extends AbstractSingleton {
         return this.context.getString(resID, formatArgs);
     }
 
-    protected Pair<String, String> httpGet(String url)
+    protected Pair<String, String> httpGet(String url, boolean usePhoneUa)
     {
         try {
             Request request = new Request.Builder()
-                    .header("User-Agent", Helpers.getPhoneUa())
+                    .header("User-Agent", usePhoneUa ? Helpers.getPhoneUa() : Helpers.getPcUa())
                     .url(url)
                     .build();
 

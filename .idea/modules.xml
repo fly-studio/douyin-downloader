@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="douyin-downloader/app" />
-      <module fileurl="file://$PROJECT_DIR$/douyin-downloader.iml" filepath="$PROJECT_DIR$/douyin-downloader.iml" group="douyin-downloader" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/douyin-downloader.iml" filepath="$PROJECT_DIR$/.idea/modules/douyin-downloader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/douyin-downloader.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/douyin-downloader.app.iml" />
     </modules>
   </component>
 </project>

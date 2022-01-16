@@ -128,7 +128,7 @@ public class MainActivity extends BaseActivity {
 
                 if (!lastClip.equals(str))
                 {
-                    if (Helpers.containsDouyin(MainActivity.this, str)) {
+                    if (Helpers.containsVideoUrl(MainActivity.this, str)) {
                         lastClip = str;
                         showVideoSearchFragment();
                         searchFragment.setText(str);

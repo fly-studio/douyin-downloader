@@ -15,9 +15,9 @@ import java.util.regex.Pattern;
 
 public class Helpers {
 
-    public static boolean containsDouyin(Context context, String str)
+    public static boolean containsVideoUrl(Context context, String str)
     {
-        return !StringUtils.isEmpty(str) && str.matches(context.getString(R.string.url_douyin_regex));
+        return !StringUtils.isEmpty(str) && str.matches(context.getString(R.string.video_url_regex));
     }
 
     public static String stripUrl(String shareUrl)
@@ -28,6 +28,25 @@ public class Helpers {
                 matcher.group(0)
                 : null;
     }
+
+    public static String getPcUa()
+    {
+        // https://techblog.willshouse.com/2012/01/03/most-common-user-agents/
+        String[] ua = new String[] {
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/95.0",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
+                "Mozilla/5.0 (X11; Linux x86_64; rv:95.0) Gecko/20100101 Firefox/95.0",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0) Gecko/20100101 Firefox/95.0",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.1.15",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 Edg/96.0.1054.62",
+        };
+
+        List<String> uas = Arrays.asList(ua);
+        return uas.get(new Random().nextInt(ua.length - 1));
+    }
+
     public static String getPhoneUa()
     {
         String[] ua = new String[] {

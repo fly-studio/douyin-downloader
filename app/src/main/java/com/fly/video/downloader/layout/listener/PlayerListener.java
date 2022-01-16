@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.fly.video.downloader.core.listener.ActivityListener;
+import com.fly.video.downloader.layout.fragment.VideoFragment;
 
 import java.io.FileDescriptor;
 
@@ -66,7 +67,7 @@ public class PlayerListener extends ActivityListener {
         //    public void run() {
                 try {
                     resetVideo();
-                    player.setDataSource(getContext(), video_uri);
+                    player.setDataSource(video_uri.toString());
                     player.prepareAsync();
                 } catch (Exception e) { // I can split the exceptions to get which error i need.
                     e.printStackTrace();
@@ -80,7 +81,7 @@ public class PlayerListener extends ActivityListener {
         //    public void run() {
                 try {
                     resetVideo();
-                    player.setDataSource(getContext(), Uri.parse(video_url));
+                    player.setDataSource(video_url);
                     player.prepareAsync();
                 } catch (Exception e) { // I can split the exceptions to get which error i need.
                     e.printStackTrace();
@@ -239,6 +240,10 @@ public class PlayerListener extends ActivityListener {
         //textureView.setX(viewRect.x);
         //textureView.setY(viewRect.y);
 
+        Rectangle rectangle = new Rectangle();
+        rectangle.setBounds(0, 0, videoWidth, videoHeight);
+        if (iPlayerChangeListener != null) iPlayerChangeListener.onResize(rectangle);
+
     }
 
     private MediaPlayer.OnCompletionListener mMediaPlayerOnCompletionListener = new MediaPlayer.OnCompletionListener(){
@@ -311,5 +316,7 @@ public class PlayerListener extends ActivityListener {
 
     public interface IPlayerChangeListener {
         void onChange(STATUS status);
+        void onResize(Rectangle lp);
     }
+
 }

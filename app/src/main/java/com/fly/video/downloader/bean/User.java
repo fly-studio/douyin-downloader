@@ -1,9 +1,9 @@
 package com.fly.video.downloader.bean;
 
 public class User {
-    protected String id = null;
-    protected String nickname = null;
-    protected String avatarUrl = null;
+    protected String id = "";
+    protected String nickname = "";
+    protected String avatarUrl = "";
 
     public String getId() {
         return id;

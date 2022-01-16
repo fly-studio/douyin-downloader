@@ -47,7 +47,7 @@ public class DouyinV3 extends VideoParser {
         if (url == null)
             throw new URLInvalidException(this.getString(R.string.exception_invalid_url));
 
-        Pair<String, String> response = httpGet(url);
+        Pair<String, String> response = httpGet(url, true);
 
         return parseVideo(response.getKey(), response.getValue());
     }
@@ -67,11 +67,12 @@ public class DouyinV3 extends VideoParser {
 
         String api_url = "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=" + itemId + "&dytk=" + dytk;
 
-        Pair<String, String> response = httpGet(api_url);
+        Pair<String, String> response = httpGet(api_url, true);
         String jsonStr = response.getValue();
         Record record = Jsonable.fromJson(Record.class, jsonStr);
 
         DouyinVideo video = new DouyinVideo();
+        video.setOriginalUrl(url);
 
         if (record.isEmpty()) {
             url = dom.select("#theVideo").attr("src");
@@ -200,7 +201,5 @@ public class DouyinV3 extends VideoParser {
             }
         }
     }
-
-
 
 }

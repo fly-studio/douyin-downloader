@@ -1,16 +1,19 @@
 package com.fly.video.downloader.layout.listener;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.constraint.solver.widgets.Rectangle;
 import android.support.v4.app.Fragment;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,8 +24,10 @@ import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.bean.Video;
 import com.fly.video.downloader.content.analyzer.AnalyzerTask;
+import com.fly.video.downloader.content.analyzer.app.AnyVideoV1;
 import com.fly.video.downloader.core.io.Storage;
 import com.fly.video.downloader.core.listener.FragmentListener;
+import com.fly.video.downloader.layout.fragment.VideoFragment;
 import com.fly.video.downloader.util.io.FileStorage;
 import com.fly.video.downloader.util.network.DownloadQueue;
 import com.fly.video.downloader.util.network.Downloader;
@@ -106,6 +111,13 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
             if (iconVideoPause != null)
                 iconVideoPause.setVisibility(status == PlayerListener.STATUS.PAUSE ? View.VISIBLE : View.INVISIBLE);
         }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onResize(Rectangle rectangle) {
+            nickname.setText(nickname.getText() + " " + rectangle.width + "x" + rectangle.height);
+        }
+
     };
 
     @Override
@@ -129,24 +141,36 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
             downloadQueue.clear();
             nickname.setText(video.getUser().getNickname());
             content.setText(video.getTitle());
+            avatar.setImageResource(R.drawable.ic_launcher_foreground);
 
             //downloadQueue.add("avatar_thumb-" + video.getUser().getId(), new Downloader(video.getUser().getAvatarThumbUrl()).setFileAsCache(FileStorage.TYPE.IMAGE, "avatar_thumb-" + video.getUser().getId()));
-            //downloadQueue.add("cover-" + video.getId(), new Downloader(video.getCoverUrl(), FileStorage.TYPE.IMAGE, "cover-" + video.getId()).saveToCache());
+            //downloadQueue.add("cover-" + video.getId(), new Downloader(video.getCsoverUrl(), FileStorage.TYPE.IMAGE, "cover-" + video.getId()).saveToCache());
             textDownloaded.setVisibility(View.INVISIBLE);
 
-            GlideApp.with(fragment)
-                    .load(video.getUser().getAvatarUrl())
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.drawable.ic_notifications_black_24dp)
-                    .skipMemoryCache(true)
-                    .circleCrop()
-                    .into(avatar);
+            if (!video.getUser().getAvatarUrl().isEmpty()) {
+                GlideApp.with(fragment)
+                        .load(video.getUser().getAvatarUrl())
+                        .placeholder(R.mipmap.ic_launcher)
+                        .error(R.drawable.ic_notifications_black_24dp)
+                        .skipMemoryCache(true)
+                        .circleCrop()
+                        .into(avatar);
+            }
 
             Downloader videoDownloader = new Downloader(video.getUrl()).setFileAsDCIM(FileStorage.TYPE.VIDEO, "video-"+ video.getId() + ".mp4");
 
-            if (videoDownloader.getFile().exists())
+            if (videoDownloader.getFile().exists()) // 文件已经下载, 则直接播放
                 playerListener.playVideo(Uri.fromFile(videoDownloader.getFile()));
-            else {
+            else { // 如果文件没有下载
+
+                // 如果来源于历史, 并且没有文件, 则需要重新解析
+                if (fromHistory && !video.getOriginalUrl().isEmpty()) {
+                    Toast.makeText(this.context, R.string.restart_analyzing, Toast.LENGTH_SHORT).show();
+                    ((VideoFragment)fragment).Analyze(video.getOriginalUrl() + " " + video.getTitle());
+
+                    return;
+                }
+
                 downloadQueue.add("video-" + video.getId(), videoDownloader);
                 playerListener.playVideo(video.getUrl());
             }
@@ -155,6 +179,7 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
                 downloadQueue.start();
             } catch (Exception e) {
                 e.printStackTrace();
+                Toast.makeText(this.context, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -204,12 +229,21 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
 
     @Override
     public void onDownloadError(String hash, Downloader downloader, Throwable e) {
-
+        e.printStackTrace();
+        if (e.getMessage() == null || e.getMessage().isEmpty()) {
+        } else {
+            Toast.makeText(this.context, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public void onAnalyzeError(Throwable e) {
-        Toast.makeText(this.context, e.getMessage(), Toast.LENGTH_LONG).show();
+        e.printStackTrace();
+
+        if (e.getMessage() == null || e.getMessage().isEmpty()) {
+        } else {
+            Toast.makeText(this.context, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
