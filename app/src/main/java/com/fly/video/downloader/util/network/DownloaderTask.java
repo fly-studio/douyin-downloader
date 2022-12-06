@@ -57,7 +57,7 @@ public class DownloaderTask extends AsyncTask<Void, Long, AsyncTaskResult<Downlo
             BufferedSource source = body.source();
             BufferedSink sink = Okio.buffer(Okio.sink(tmpFile));
 
-            while ((read = source.read(sink.buffer(), DOWNLOAD_CHUNK_SIZE)) != -1) {
+            while ((read = source.read(sink.getBuffer(), DOWNLOAD_CHUNK_SIZE)) != -1) {
                 totalRead += read;
                 publishProgress(totalRead, contentLength);
             }

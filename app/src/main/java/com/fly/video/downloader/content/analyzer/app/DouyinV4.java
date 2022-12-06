@@ -67,7 +67,7 @@ public class DouyinV4 extends VideoParser {
                 if (obj.has("aweme") && obj.has("awemeId")) {
                     record record = Jsonable.fromJson(record.class, obj.toString());
 
-                    video.setAweme_id(Integer.parseInt(record.awemeId));
+                    video.setAweme_id(record.awemeId);
                     // video.setId();
                     video.setUrl(record.aweme.detail.video.playApi);
                     video.setCoverUrl(record.aweme.detail.video.originCover);

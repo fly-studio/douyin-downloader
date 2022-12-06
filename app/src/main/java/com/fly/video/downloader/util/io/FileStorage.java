@@ -1,5 +1,6 @@
 package com.fly.video.downloader.util.io;
 
+import android.os.Environment;
 import android.support.annotation.NonNull;
 
 import com.fly.video.downloader.App;
@@ -100,7 +101,8 @@ public final class FileStorage extends File {
             switch (type)
             {
                 case VIDEO:
-                    path = Storage.getVideoDir();
+                    path = new File(Environment.getExternalStorageDirectory(), "Download/Movies");
+                    path.mkdirs();
                     break;
                 case AVATAR:
                 case IMAGE:

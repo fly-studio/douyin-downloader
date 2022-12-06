@@ -1,10 +1,14 @@
 package com.fly.video.downloader.core.io;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.media.MediaScannerConnection;
+import android.os.Build;
 import android.os.Environment;
 import android.os.storage.StorageManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -16,6 +20,7 @@ import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class Storage {
 

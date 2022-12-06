@@ -80,7 +80,7 @@ public class DouyinV3 extends VideoParser {
             if (StringUtils.isEmpty(url))
                 throw new VideoException(this.getString(R.string.exception_html));
 
-            video.setAweme_id(json.getLong("itemId"));
+            video.setAweme_id(String.valueOf(json.getLong("itemId")));
             video.setId(String.valueOf(video.getAweme_id()));
             video.setUrl(url);
             video.setCoverUrl(dom.select("input[name=\"shareImage\"]").attr("value"));
@@ -105,7 +105,7 @@ public class DouyinV3 extends VideoParser {
         } else {
             Record.Item item = record.getItem();
 
-            video.setAweme_id(Long.parseLong(item.aweme_id));
+            video.setAweme_id(item.aweme_id);
             video.setId(item.video.vid);
             //video.setUrl(item.video.play_addr.getUrl());
             video.setCoverUrl(item.video.cover.getUrl());

@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DouyinVideo extends Video {
 
     protected String dynamicCoverUrl = null;
-    protected long aweme_id = 0;
+    protected String aweme_id = "0";
 
     public String getDynamicCoverUrl() {
         return dynamicCoverUrl;
@@ -17,11 +17,11 @@ public class DouyinVideo extends Video {
         this.dynamicCoverUrl = animateCoverUrl;
     }
 
-    public long getAweme_id() {
+    public String getAweme_id() {
         return aweme_id;
     }
 
-    public void setAweme_id(long aweme_id) {
+    public void setAweme_id(String aweme_id) {
         this.aweme_id = aweme_id;
     }
 

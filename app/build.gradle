@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     defaultConfig {
         applicationId "com.fly.video.downloader"
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -20,7 +20,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    buildToolsVersion = '29.0.3'
     dependencies {
         implementation fileTree(dir: 'libs', include: ['*.jar'])
 //        implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -50,7 +49,7 @@ android {
         implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
 
         // jsoup
-        implementation 'org.jsoup:jsoup:1.11.3'
+        implementation 'org.jsoup:jsoup:1.13.1'
 
         //jackson
         implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.13.0'
@@ -67,8 +66,8 @@ android {
         implementation (name: 'iconify-fontawesome-debug', ext: 'aar')
 
         //Ask perm
-        implementation 'com.github.florent37:runtime-permission:1.0.1'
-
+        implementation 'pub.devrel:easypermissions:2.0.1'
     }
+    namespace 'com.fly.video.downloader'
 }
 

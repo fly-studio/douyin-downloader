@@ -24,7 +24,6 @@ import com.fly.video.downloader.MainActivity;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.bean.Video;
 import com.fly.video.downloader.content.analyzer.AnalyzerTask;
-import com.fly.video.downloader.content.analyzer.app.AnyVideoV1;
 import com.fly.video.downloader.core.io.Storage;
 import com.fly.video.downloader.core.listener.FragmentListener;
 import com.fly.video.downloader.layout.fragment.VideoFragment;
@@ -257,7 +256,9 @@ public class VideoFragmentListener extends FragmentListener implements AnalyzerT
         PackageManager packageManager = context.getPackageManager();
         //Intent intent = new Intent();
         Intent intent = packageManager.getLaunchIntentForPackage("com.ss.android.ugc.aweme");
-        context.startActivity(intent);
+        if (intent != null) {
+            context.startActivity(intent);
+        }
 
         com.fly.video.downloader.core.app.Process.background((Activity) context);
 
