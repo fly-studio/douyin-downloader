@@ -15,10 +15,10 @@
     <string name="download_complete">下载完成</string>
 
     <!--网址-->
-    <string name="video_url_regex">(?s)(.*?)(douyin|ixigua\.com|pipix|huoshan|h5\.weishi|isee\.weishi|weibo\.com|oasis\.weibo|zuiyou|xiaochuankeji|bbq.bilibili|kuaishou|quanmin|moviebase|hanyuhl|eyepetizer|immomo|vuevideo|xiaokaxiu|ippzone|pipigx|qq\.com|doupai|6\.cn|huya\.com/play/|pearvideo\.com|xinpianchang\.com|acfun\.cn|meipai\.com)(.*?)</string>
+    <string name="video_url_regex">(?s)(.*?)(douyin\.com|iesdouyin\.com)(.*?)</string>
     <string name="clip_valid">检测到剪贴板中有视频网址，自动跳转到搜索页面</string>
     <string name="maybe_watermark">获得的视频可能会有水印</string>
-
+    <string name="action_settings"></string>
 
     <!--异常-->
     <string name="exception_invalid_video">无法获取到有效的视频</string>

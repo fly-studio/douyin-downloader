@@ -24,9 +24,17 @@ public class Helpers {
     {
         Pattern pattern = Patterns.WEB_URL;
         Matcher matcher = pattern.matcher(shareUrl);
-        return matcher.find() ?
+        String url = matcher.find() ?
                 matcher.group(0)
                 : null;
+        if (url != null) {
+            int n =  url.contains("https://") ? url.indexOf("https://") : url.indexOf("http://");
+            if (n >= 0) {
+                url = url.substring(n);
+            }
+        }
+
+        return url;
     }
 
     public static String getPcUa()
