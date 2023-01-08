@@ -7,8 +7,6 @@ import android.os.AsyncTask;
 import com.fly.video.downloader.R;
 import com.fly.video.downloader.bean.Video;
 import com.fly.video.downloader.content.analyzer.app.AnyVideoV1;
-import com.fly.video.downloader.content.analyzer.app.DouyinV4;
-import com.fly.video.downloader.content.analyzer.app.DouyinV5;
 import com.fly.video.downloader.contract.VideoParser;
 import com.fly.video.downloader.core.exception.URLInvalidException;
 import com.fly.video.downloader.core.os.AsyncTaskResult;
@@ -33,7 +31,7 @@ public class AnalyzerTask extends AsyncTask<String, Integer, AsyncTaskResult<Vid
         VideoParser parser = null;
 
         if (Helpers.containsVideoUrl(context, str)) {
-            parser = DouyinV5.getInstance(this.context);
+            parser = AnyVideoV1.getInstance(this.context);
         }
 
         try {
